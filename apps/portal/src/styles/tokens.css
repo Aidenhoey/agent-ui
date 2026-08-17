@@ -1,0 +1,87 @@
+:root {
+  color-scheme: light dark;
+  --color-bg: light-dark(#fcfbfa, #181716);
+  --color-surface: light-dark(#f4f3f2, #11100f);
+  --color-raised: light-dark(#ffffff, #232321);
+  --color-divider: light-dark(#e7e6e5, #2c2b2a);
+  --color-border: light-dark(#d0cfce, #3e3d3c);
+  --color-text-subtle: light-dark(#8d8c8a, #757472);
+  --color-text-muted: light-dark(#6a6967, #9f9e9c);
+  --color-text: light-dark(#201f1d, #e9e8e6);
+
+  --color-brand: light-dark(#004890, #6da1e3);
+  --color-brand-text: light-dark(#19559a, #98cbff);
+  --color-brand-tint: light-dark(#ebf4ff, #1d2632);
+  --color-action: light-dark(#201f1d, #e9e8e6);
+  --color-on-action: light-dark(#fcfbfa, #181716);
+  --color-action-hover: light-dark(#363533, #ffffff);
+  --color-focus: light-dark(#3568b8, #74a7e8);
+  --color-focus-text: light-dark(#2959a3, #9bc6ff);
+  --color-focus-tint: light-dark(#ebf4ff, #1d2633);
+  --color-danger: light-dark(#a33d2e, #df8074);
+  --color-danger-text: light-dark(#963729, #ffa897);
+  --color-danger-tint: light-dark(#ffeeeb, #32201d);
+  /* 危险动作（删除 / 退出 / 移除）统一态，范式 = 会话菜单「删除会话」：静止用 -action-text 文字，悬停用 -action-bg 实心底 + 白字。 */
+  --color-danger-action-text: light-dark(#802828, var(--color-danger-text));
+  --color-danger-action-bg: light-dark(#c04040, var(--color-danger));
+  --color-success: light-dark(#286d4a, #7fbb98);
+  --color-success-text: light-dark(#296948, #9bd4b2);
+  --color-success-tint: light-dark(#e8f8ee, #192920);
+  --color-warning: light-dark(#c27b24, #e7a968);
+  --color-warning-text: light-dark(#884900, #f6ba7c);
+  --color-warning-tint: light-dark(#fdf1e3, #2b2117);
+
+  --state-hover: color-mix(in srgb, var(--color-text) 5%, transparent);
+  --state-press: color-mix(in srgb, var(--color-text) 9%, transparent);
+  --state-selected: color-mix(in srgb, var(--color-text) 7%, transparent);
+
+  --color-neutral-100: light-dark(#f4f3f2, #171615);
+  --color-neutral-900: light-dark(#31302e, #ecebe9);
+  --color-accent-100: light-dark(#ebf4ff, #11161d);
+  --color-accent-300: light-dark(#b1d2fd, #1f3551);
+  --color-accent-400: light-dark(#86b4ef, #30517c);
+  --color-accent-700: light-dark(#1b5aa4, #80b4f6);
+  --color-accent-800: light-dark(#0f4481, #a4d1ff);
+
+  --font-ui: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-heading: var(--font-ui);
+  --font-body: var(--font-ui);
+  --font-heading-weight: 600;
+  /* 会话 markdown 专用：西文数字走 Georgia，中文回落到思源宋体 / 系统宋体，形成研究报告的衬线正文。 */
+  --font-serif: Georgia, "Noto Serif SC", "Source Han Serif SC", "Source Han Serif CN", "Songti SC", STSong, ui-serif, serif;
+  /* overline 小标签 / 代码：JetBrains Mono 优先，回落到系统等宽。 */
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --space-1: 4.6px;
+  --space-2: 9.2px;
+  --space-3: 13.8px;
+  --space-4: 18.4px;
+  --space-6: 27.6px;
+  --space-8: 36.8px;
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+
+  --shadow-sm: 0 1px 2px light-dark(rgba(34, 31, 26, 0.06), rgba(0, 0, 0, 0));
+  --shadow-md: 0 4px 14px light-dark(rgba(34, 31, 26, 0.09), rgba(0, 0, 0, 0.45));
+  --shadow-lg: 0 12px 32px light-dark(rgba(34, 31, 26, 0.13), rgba(0, 0, 0, 0.6));
+  --color-scrim: rgba(12, 11, 9, 0.45);
+
+  /* 数据可视化语义色 —— 图表系列 / 网格 / 轴线。深浅主题各自选定（非亮度翻转），
+     系列色已按背景对比度校验；文字一律走文本 token，不穿系列色。 */
+  --viz-s1: light-dark(#1b5aa4, #3987e5); /* 品牌蓝 · 槽 1 */
+  --viz-s2: light-dark(#1baf7a, #199e70); /* 青绿   · 槽 2 */
+  --viz-s3: light-dark(#eda100, #c98500); /* 琥珀   · 槽 3 */
+  --viz-s4: light-dark(#7048c4, #a385e0); /* 紫     · 槽 4 */
+  --viz-s5: light-dark(#c2453f, #e0857e); /* 砖红   · 槽 5 */
+  --viz-s6: light-dark(#0f7c8c, #4fb3c2); /* 藏青   · 槽 6 */
+  --viz-grid: light-dark(#eceae8, #2c2b2a); /* 网格发丝线 */
+  --viz-axis: light-dark(#c9c7c5, #3e3d3c); /* 基线 / 轴 */
+  --viz-dim: light-dark(#c4c2c0, #4a4948); /* 弱化 / 对照系列 */
+}
+
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }

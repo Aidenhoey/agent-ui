@@ -1,0 +1,718 @@
+.app-shell { display: flex; width: 100%; height: 100dvh; overflow: hidden; background: var(--color-bg); }
+.app-main { display: flex; min-width: 0; flex: 1; overflow: hidden; container-type: inline-size; }
+.app-sidebar {
+  position: relative;
+  z-index: 20;
+  width: 264px;
+  flex: none;
+  overflow: visible;
+  transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.app-sidebar.is-collapsed { width: 60px; }
+
+/* 右侧边缘拖拽/折叠指示条：鼠标靠近时显示左右方向光标，点击即可切换展开/折叠。 */
+button.sidebar__resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 8px;
+  z-index: 1;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: col-resize;
+  transition: background-color 130ms ease;
+}
+.sidebar__resizer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: var(--color-focus);
+  opacity: 0;
+  transition: opacity 130ms ease;
+}
+button.sidebar__resizer:hover,
+button.sidebar__resizer:focus-visible {
+  background: var(--state-hover);
+}
+button.sidebar__resizer:hover::before,
+button.sidebar__resizer:focus-visible::before {
+  opacity: 1;
+}
+
+.sidebar__surface {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  width: 264px;
+  flex-direction: column;
+  overflow: visible;
+  border-right: 1px solid transparent;
+  background: var(--color-raised);
+  transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1), background-color 180ms ease;
+}
+.app-sidebar.is-collapsed .sidebar__surface { width: 60px; background: transparent; }
+.sidebar__brand-row { display: flex; align-items: center; gap: 8px; padding: 16px 14px 12px; }
+.brand-button { display: flex; min-width: 0; flex: 1; justify-content: flex-start; align-items: center; height: auto; background: transparent; padding: 0; }
+.brand-button:hover { background: transparent; }
+.brand-button__viewport { display: flex; height: 25px; align-items: center; overflow: hidden; }
+.brand-button img { width: auto; height: 22px; max-width: none; }
+.sidebar__collapse { width: 30px; height: 30px; margin-left: auto; flex: none; }
+.sidebar__primary { display: grid; gap: 4px; padding: 0 12px 8px 8px; }
+.nav-item {
+  display: flex;
+  align-items: center;
+  /* shadcn 的 cva 基类带 justify-center 和固定 h-9，会把 Button 型导航项推到居中并压扁；
+     相邻的 NavLink 是 <a>，不受影响 —— 两者必须靠内边距长到同一高度。 */
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  gap: 9px;
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  color: var(--color-text-muted);
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  /* 行高决定行高度：demo 的导航项是原生 button，取 UA 的 normal 而非 body 的 1.55，
+     落在 36px。我们的 reset 把 1.55 传进了控件，所以这里要显式取回。 */
+  line-height: normal;
+  text-align: left;
+  transition: background-color 130ms ease, color 130ms ease;
+}
+.nav-item:hover { background: var(--state-hover); color: var(--color-text); }
+.nav-item:active { background: var(--state-press); }
+.nav-item.is-active { background: var(--state-selected); color: var(--color-text); }
+/* 选中态不因悬停再变化 —— 它已经到位了。 */
+.nav-item.is-active:hover { background: var(--state-selected); }
+/* 主按钮区只剩「新建会话」—— 身份从导航项转为主操作按钮：悬停轻微浮起 + 阴影、按下落回，
+   不保留持久选中高亮（首页 composer 本身就是位置地标）。 */
+.nav-item--cta { transition: background-color 130ms ease, color 130ms ease, transform 130ms ease, box-shadow 130ms ease; }
+.nav-item--cta:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.nav-item--cta:active { transform: translateY(0); box-shadow: none; }
+@media (prefers-reduced-motion: reduce) {
+  .nav-item--cta, .nav-item--cta:hover, .nav-item--cta:active { transition: none; transform: none; }
+}
+.nav-item > svg { width: 16px; height: 16px; flex: none; }
+.nav-item--subtle, .nav-item--conversation { font-family: var(--font-body); font-weight: 400; }
+.nav-item--subtle > svg { width: 15px; height: 15px; opacity: 0.7; }
+/* 最近会话是纯标题行：无图标，靠缩进而非字重排布。 */
+.nav-item--conversation { gap: 7px; padding: 8px 12px; }
+.nav-item__label--truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 导航项右侧的快捷键提示：对齐 composer slash-foot kbd 范式（divider 描边 / surface 底 / 等宽），
+   推到导航项右端。默认隐藏，仅在悬停（且非选中态）时淡入，避免常态噪音。 */
+.sidebar__kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: auto;
+  padding: 0 4px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-xs);
+  background: var(--color-surface);
+  color: var(--color-text-subtle);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 130ms ease;
+}
+.nav-item:hover .sidebar__kbd,
+.sidebar__rail-nav:hover .sidebar__kbd { opacity: 1; }
+/* 折叠态无文字标签，快捷键提示也一并隐去。 */
+.app-sidebar.is-collapsed .sidebar__kbd { display: none; }
+
+/* 会话行：标题链接是整行点击区，⋯ 按钮浮在右侧、悬停/聚焦/菜单打开时淡入（对齐 demo .db-convrow）。
+   行不能是 <button> 套 <button>，所以标题是链接、⋯ 是它的兄弟节点，绝对定位压在标题右内边距上。 */
+/* min-width: 0 必须挂在 grid item 身上：缺了它，行宽会被锁死在标题 min-content 宽度，整行顶出 sidebar__scroll。 */
+.nav-conv { position: relative; display: flex; min-width: 0; align-items: center; }
+.nav-conv__link { flex: 1; min-width: 0; padding-right: 34px; }
+.nav-conv__pin { width: 12px; height: 12px; flex: none; color: var(--color-brand); }
+.nav-conv__more {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 130ms ease, background-color 130ms ease, color 130ms ease;
+}
+.nav-conv:hover .nav-conv__more,
+.nav-conv__more[data-state="open"],
+.nav-conv__more:focus-visible { opacity: 1; }
+/* 选择模式 ⋯ 常驻（菜单内有「退出多选」取消路径）；状态点此时隐藏，无叠放冲突。 */
+.nav-conv--selecting .nav-conv__more { opacity: 1; }
+.nav-conv__more:hover,
+.nav-conv__more[data-state="open"] { background: color-mix(in srgb, var(--color-text) 9%, transparent); color: var(--color-text); }
+.nav-conv__more > svg { width: 15px; height: 15px; }
+
+/* 运行态指示器：与 ⋯ 共用右侧格子、叠放。非 hover 显示状态，hover 淡出让位给 ⋯。
+   pointer-events:none 让鼠标穿透到行，⋯ 仍可点。四态：running 转圈 / waiting_for_user 黄脉冲 / needs_review 蓝静态 / failed 红静态。 */
+.nav-conv__status {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: opacity 130ms ease;
+}
+.nav-conv:hover .nav-conv__status { opacity: 0; }
+.nav-conv__status::before { content: ""; display: block; box-sizing: border-box; }
+.nav-conv__status[data-status="running"]::before {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--color-text) 18%, transparent);
+  border-top-color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  animation: nav-conv-spin 700ms linear infinite;
+}
+.nav-conv__status[data-status="waiting_for_user"]::before {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-warning);
+  animation: nav-conv-pulse 1100ms ease-in-out infinite;
+}
+.nav-conv__status[data-status="failed"]::before {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-danger);
+}
+.nav-conv__status[data-status="needs_review"]::before {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-focus);
+}
+@keyframes nav-conv-spin { to { transform: rotate(360deg); } }
+@keyframes nav-conv-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.25); }
+}
+
+/* 多选模式：行首 checkbox 格。 */
+.nav-conv__check { flex: none; display: grid; place-items: center; width: 24px; }
+/* 多选批量操作条：固定在滚动区之外（列表与账户区之间），长列表不遮挡；
+   surface 色相对侧栏 raised 底后退一层，入场轻微上滑淡入。 */
+.sidebar__select-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 4px 8px 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: 13px;
+  color: color-mix(in srgb, var(--color-text) 65%, transparent);
+  animation: sidebar-select-bar-in 160ms ease;
+}
+.sidebar__select-bar__actions { display: flex; gap: 8px; }
+.sidebar__select-bar strong { color: var(--color-text); font-variant-numeric: tabular-nums; }
+@keyframes sidebar-select-bar-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 标题占位→摘要打字覆盖：两层网格叠放，占位淡出、摘要淡入并逐字覆盖。 */
+.nav-conv__title { position: relative; display: grid; flex: 1; min-width: 0; }
+.nav-conv__title > .nav-item__label { grid-area: 1 / 1; }
+.nav-conv__title-ph { transition: opacity 180ms ease; }
+.nav-conv__title-ph.is-out { opacity: 0; }
+.nav-conv__title-summary { animation: nav-conv-title-in 200ms ease both; }
+@keyframes nav-conv-title-in { from { opacity: 0; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-conv__status[data-status]::before,
+  .nav-conv__title-summary,
+  .sidebar__select-bar { animation: none; }
+}
+
+/* 项目行：结构与最近会话一致，图标按钮同样悬停/聚焦/菜单打开时显示。 */
+.nav-project { position: relative; display: flex; align-items: center; }
+.nav-project__link { flex: 1; min-width: 0; padding-right: 34px; }
+.nav-project__pin { width: 15px; height: 15px; flex: none; color: var(--color-brand); }
+.nav-project__more {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 130ms ease, background-color 130ms ease, color 130ms ease;
+}
+.nav-project:hover .nav-project__more,
+.nav-project__more[data-state="open"],
+.nav-project__more:focus-visible { opacity: 1; }
+.nav-project__more:hover,
+.nav-project__more[data-state="open"] { background: color-mix(in srgb, var(--color-text) 9%, transparent); color: var(--color-text); }
+.nav-project__more > svg { width: 15px; height: 15px; }
+/* 就地重命名输入框：占满行宽，聚焦环沿用全局控件的蓝边（对齐 demo .db-renameinput）。 */
+.nav-conv__rename {
+  width: 100%;
+  border: 1px solid var(--color-focus);
+  border-radius: var(--radius-sm);
+  background: var(--color-raised);
+  padding: 7px 11px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+}
+/* 会话菜单：复用账户菜单卡片样式（.account-menu），删除项走危险色，子菜单标题与空态为静音小字。 */
+.conv-menu__label { padding: 5px 10px 6px; color: color-mix(in srgb, var(--color-text) 50%, transparent); font-size: 10px; letter-spacing: 0.11em; text-transform: uppercase; }
+.conv-menu__empty { padding: 6px 10px 8px; color: color-mix(in srgb, var(--color-text) 55%, transparent); font-size: 12.5px; line-height: 1.5; }
+
+/* overflow-x 兜底：只写 overflow-y 时横向会退化为 auto，任何后代失控都会撑出横向滚动条。 */
+.sidebar__scroll { display: flex; min-height: 0; flex: 1; flex-direction: column; gap: 16px; overflow-x: hidden; overflow-y: auto; padding: 8px; }
+.sidebar__section { display: block; }
+.sidebar__section-header { display: flex; min-height: 24px; align-items: center; padding: 0 4px 4px; }
+.sidebar__section-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  padding: 3px 4px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: var(--font-heading-weight);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+.sidebar__section-toggle:hover { color: var(--color-text); }
+.sidebar__section-toggle > svg { width: 13px; height: 13px; transition: transform 150ms ease; }
+.sidebar__section-toggle[data-state="closed"] > svg { transform: rotate(-90deg); }
+.sidebar__section-view-all {
+  margin-left: auto;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  padding: 3px 5px;
+  color: var(--color-text-muted);
+  font-size: 11.5px;
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  transition: opacity 130ms ease, background-color 130ms ease, color 130ms ease;
+}
+.sidebar__section-header--actions:hover .sidebar__section-view-all,
+.sidebar__section-header--actions:focus-within .sidebar__section-view-all { opacity: 1; pointer-events: auto; }
+.sidebar__section-view-all:hover { background: var(--state-hover); color: var(--color-text); }
+/* minmax(0, 1fr)：grid item 默认最小宽度是内容宽度，长标题会撑破列宽；与 .nav-conv 的 min-width: 0 双保险。 */
+.sidebar__section-items { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+.sidebar__section-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 20px 14px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+.sidebar__section-empty-icon { width: 22px; height: 22px; color: var(--color-text-subtle); }
+.sidebar__section-empty-title { font-size: 13px; font-weight: var(--font-heading-weight); color: var(--color-text-muted); }
+.sidebar__section-empty-desc { font-size: 12px; line-height: 1.5; color: var(--color-text-subtle); }
+.sidebar__guest-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 28px 20px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+.sidebar__guest-empty-icon { width: 26px; height: 26px; color: var(--color-text-subtle); }
+.sidebar__guest-empty-title { font-size: 14px; font-weight: var(--font-heading-weight); color: var(--color-text-muted); }
+.sidebar__guest-empty-desc { font-size: 12.5px; line-height: 1.6; color: var(--color-text-subtle); }
+/* 左右两容器：左侧账户入口（flex:1 的 .account-trigger），右侧消息铃铛按钮。
+   容器内收 + 圆角：两按钮悬浮在分隔区内，hover 只裹住按钮本身，不铺满整行。 */
+.sidebar__account { position: relative; display: flex; align-items: stretch; gap: 8px; padding: 10px; border-top: 1px solid var(--color-divider); }
+
+/* ── 邀请横幅：浮在账户行正上方，不挤占布局 ───────────────────────────── */
+.invite-banner {
+  position: absolute;
+  right: 12px;
+  bottom: calc(100% + 10px);
+  left: 12px;
+  z-index: 10;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-raised);
+  box-shadow: var(--shadow-lg);
+  padding: 12px 14px;
+}
+.invite-banner__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.invite-banner__title { font-size: 12px; font-weight: var(--font-heading-weight); color: var(--color-text); }
+.invite-banner__close {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  padding: 0;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.invite-banner__close:hover { background: var(--state-hover); color: var(--color-text); }
+.invite-banner__close svg { width: 14px; height: 14px; }
+.invite-banner__text { font-size: 13px; line-height: 1.45; color: var(--color-text); }
+.invite-banner__more { margin-top: 4px; font-size: 11px; color: var(--color-text-muted); }
+.invite-banner__actions { display: flex; justify-content: flex-end; margin-top: 10px; }
+.invite-banner__actions [data-slot="button"] { height: auto; padding: 6px 14px; font-size: 12px; }
+.account-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  flex: 1;
+  height: auto;
+  gap: 10px;
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  color: var(--color-text);
+  text-align: left;
+}
+.account-trigger:hover { background: var(--state-hover); }
+.avatar { display: grid; width: 30px; height: 30px; flex: none; place-items: center; border: 1px solid var(--color-brand); border-radius: var(--radius-full); color: var(--color-brand-text); font-size: 14px; font-weight: 600; }
+.avatar--soft, .workspace-mark { border: 0; background: var(--color-brand-tint); }
+/* 1.25 而非 normal：姓名/手机号两行要压到 30.6px，让整行落在 demo 的 62.6px。 */
+.account-trigger__copy { display: flex; min-width: 0; flex: 1; flex-direction: column; line-height: 1.25; }
+.account-trigger__copy strong { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.account-trigger__copy small { overflow: hidden; max-width: 150px; color: color-mix(in srgb, var(--color-text) 55%, transparent); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+/* 消息铃铛按钮：账户区右侧容器；未读徽章随逐条已读递减，全部读完熄灭。 */
+.account-notif {
+  display: grid;
+  width: 42px;
+  flex: none;
+  place-items: center;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  padding: 0;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.account-notif:hover { background: var(--state-hover); color: var(--color-text); }
+.account-notif > svg { width: 16px; height: 16px; }
+.account-notif__icon-wrap { position: relative; display: inline-flex; flex: none; }
+.account-notif__icon-wrap > svg { width: 16px; height: 16px; }
+/* 深红底 + 反白字小胶囊徽章，单个数字时呈正圆；只搭在铃铛右上角外侧、不压图标主体，用 raised 色环与图标拉开层次（环色 = 侧栏表面色）。 */
+.account-notif__badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 13px;
+  height: 13px;
+  padding: 0 3px;
+  border-radius: var(--radius-full);
+  background: var(--color-danger);
+  color: var(--color-on-action);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 13px;
+  text-align: center;
+  box-shadow: 0 0 0 1.5px var(--color-raised);
+}
+/* ── 折叠后的 60px 图标栏 ──────────────────────────────────────────────
+   项目和最近会话保留为独立入口，具体内容在右侧限高菜单中渐进展开。 */
+.app-sidebar.is-collapsed .sidebar__surface { align-items: center; gap: 6px; padding: 16px 0 12px; }
+.app-sidebar.is-collapsed .sidebar__brand-row { padding: 0; }
+.app-sidebar.is-collapsed .sidebar__primary { gap: 6px; padding: 0; }
+.app-sidebar.is-collapsed .nav-item { width: 36px; height: 36px; justify-content: center; padding: 0; }
+.app-sidebar.is-collapsed .nav-item__label,
+.app-sidebar.is-collapsed .account-trigger__copy { display: none; }
+.app-sidebar.is-collapsed .sidebar__scroll { display: none; }
+/* 折叠后账户区改为竖排：铃铛在上、头像在下（column-reverse 反转 DOM 顺序，不影响展开态左右布局），均为 36px 图标按钮；60px 轨道内不再内收。 */
+.app-sidebar.is-collapsed .sidebar__account { margin-top: auto; flex-direction: column-reverse; align-items: center; gap: 6px; padding: 0; border-top: 0; }
+.app-sidebar.is-collapsed .account-trigger { width: 36px; height: 36px; flex: none; justify-content: center; border-radius: var(--radius-sm); padding: 0; color: var(--color-text-muted); }
+.app-sidebar.is-collapsed .account-trigger:hover { background: var(--state-hover); color: var(--color-text); }
+.app-sidebar.is-collapsed .account-notif { width: 36px; height: 36px; border-radius: var(--radius-sm); }
+
+.sidebar__rail-sections { display: flex; flex-direction: column; gap: 6px; }
+.sidebar__rail-nav {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  padding: 0;
+  color: var(--color-text-muted);
+}
+.sidebar__rail-nav:is(:hover, [data-state="open"], [aria-expanded="true"]) { background: var(--state-hover); color: var(--color-text); }
+.sidebar__rail-nav.is-active,
+.sidebar__rail-nav.is-active:is([data-state="open"], [aria-expanded="true"]) { background: var(--state-selected); color: var(--color-text); }
+.sidebar__rail-nav > svg { width: 16px; height: 16px; }
+
+/* 折叠菜单的中段是唯一滚动窗口；标题和底部新建操作始终留在原位。 */
+.sidebar-rail-menu {
+  display: flex;
+  width: 252px;
+  max-height: min(420px, var(--radix-dropdown-menu-content-available-height));
+  flex-direction: column;
+  overflow: hidden;
+  padding: 6px;
+}
+.sidebar-rail-menu__label {
+  flex: none;
+  padding: 6px 10px 8px;
+  color: color-mix(in srgb, var(--color-text) 50%, transparent);
+  font-size: 10px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+.sidebar-rail-menu__header { display: flex; flex: none; align-items: center; }
+.sidebar-rail-menu__header .sidebar-rail-menu__label { min-width: 0; flex: 1; }
+.sidebar-rail-menu__view-all {
+  width: auto;
+  min-height: 26px;
+  flex: none;
+  border-radius: var(--radius-xs);
+  padding: 4px 8px;
+  color: var(--color-text-muted);
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.sidebar-rail-menu__view-all:hover,
+.sidebar-rail-menu__view-all:focus,
+.sidebar-rail-menu__view-all[data-highlighted] { background: var(--state-hover); color: var(--color-text); outline: none; }
+.sidebar-rail-menu__list {
+  display: grid;
+  min-height: 0;
+  max-height: 288px;
+  flex: 1 1 auto;
+  gap: 2px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: color-mix(in srgb, var(--color-text) 22%, transparent) transparent;
+  scrollbar-width: thin;
+}
+.sidebar-rail-menu__item { min-width: 0; cursor: pointer; }
+.sidebar-rail-menu__item .nav-item__label { min-width: 0; flex: 1; }
+.sidebar-rail-menu__pin { width: 12px !important; height: 12px !important; color: var(--color-brand); opacity: 1 !important; }
+.sidebar-rail-menu__empty { display: flex; flex-direction: column; gap: 2px; padding: 10px 10px 12px; color: var(--color-text-muted); font-size: 12.5px; line-height: 1.5; }
+.sidebar-rail-menu__empty-desc { color: var(--color-text-subtle); font-size: 11.5px; }
+.sidebar-rail-menu__footer { flex: none; background: var(--color-raised); }
+.sidebar-rail-menu__create { cursor: pointer; font-family: var(--font-heading); font-weight: var(--font-heading-weight); }
+
+/* 折叠态下 logo 就是展开控件：标志在悬停时淡出，让位给右向双箭头。
+   两层叠在同一个格子里交叉淡入淡出，所以按钮宽度不会在悬停时跳动。 */
+.sidebar__rail-brand { display: grid; width: 36px; height: 36px; flex: none; place-items: center; border: 0; border-radius: var(--radius-sm); background: transparent; padding: 0; color: var(--color-text-muted); cursor: pointer; transition: background-color 130ms ease; }
+.sidebar__rail-brand:hover { background: var(--state-hover); }
+.sidebar__rail-brand > * { grid-area: 1 / 1; transition: opacity 120ms ease; }
+.sidebar__rail-mark { width: 23px; height: 23px; object-fit: contain; }
+.sidebar__rail-chevron { width: 18px; height: 18px; opacity: 0; }
+.sidebar__rail-brand:hover .sidebar__rail-mark { opacity: 0; }
+.sidebar__rail-brand:hover .sidebar__rail-chevron { opacity: 1; }
+
+/* 账户菜单：一张浮动卡片（对齐 demo index.html:1545-1585）。 */
+.account-menu { border: 1px solid var(--color-border); }
+/* 分隔线两侧内缩、比卡片窄（demo margin:4px）—— 压掉 shadcn 的 -mx-1（那会顶到卡片两边）。 */
+.account-menu [data-slot="dropdown-menu-separator"] { margin: 4px; }
+/* 高亮/焦点只用底色，不画蓝色描边（base.css 的 :focus-visible 2px 蓝框在菜单里是噪音）。 */
+.account-menu [data-slot="dropdown-menu-item"]:focus,
+.account-menu [data-slot="dropdown-menu-item"]:focus-visible,
+.account-menu [data-slot="dropdown-menu-sub-trigger"]:focus,
+.account-menu [data-slot="dropdown-menu-sub-trigger"]:focus-visible,
+.account-menu__identity:focus,
+.account-menu__identity:focus-visible { outline: none; }
+.account-menu__identity { display: flex; align-items: center; gap: 10px; margin: -6px -6px 0; padding: 6px 16px 8px 22px; border-radius: var(--radius-md) var(--radius-md) 0 0; }
+.account-menu__identity:hover, .account-menu__identity[data-state="open"] { background: var(--state-hover); }
+.account-menu__identity .avatar { width: 28px; height: 28px; border: 0; font-size: 12px; }
+/* 头像用品牌淡蓝底 + 蓝色字（对齐 demo）。fallback 自带 bg-muted/text-muted-foreground（灰），
+   会盖住 .avatar 的底色，所以底色与字色都要落在 fallback 上。 */
+.account-menu__identity .avatar [data-slot="avatar-fallback"] { background: var(--color-brand-tint); color: var(--color-brand-text); font-weight: 600; }
+.account-menu__identity-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; }
+.account-menu__identity-copy strong { font-family: var(--font-heading); font-size: 15px; font-weight: var(--font-heading-weight); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.account-menu__identity-copy small { overflow: hidden; color: var(--color-text-muted); font-size: 11.5px; text-overflow: ellipsis; white-space: nowrap; }
+.account-menu__identity > svg { width: 15px; height: 15px; flex: none; margin-left: auto; opacity: 0.6; }
+/* 未登录态：身份行不展开子菜单，仅作弱引导。 */
+.account-menu__identity--guest { cursor: default; }
+.account-menu__identity--guest:hover { background: transparent; }
+.account-menu__identity--static { cursor: default; }
+.account-menu__identity--static:hover, .account-menu__identity--static[data-state="open"] { background: transparent; }
+.account-menu__identity--guest .account-menu__guest-icon { width: 28px; height: 28px; flex: none; border-radius: var(--radius-full); background: transparent; color: var(--color-text-muted); padding: 5px; }
+.account-menu__identity--guest .account-menu__identity-copy { justify-content: center; }
+.account-menu__identity--guest .account-menu__identity-copy small { color: var(--color-text-muted); }
+
+/* 未登录态导航栏触发器：线框图标 + 蓝色「去登录」链接，链接阻止冒泡以打开弹窗。 */
+.account-trigger--guest .account-trigger__guest-icon { width: 30px; height: 30px; flex: none; border-radius: var(--radius-full); background: transparent; color: var(--color-text-muted); padding: 6px; }
+.account-trigger--guest { position: relative; }
+.account-trigger__login-link {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--color-brand-text);
+  font-size: 13.5px;
+  line-height: 1.25;
+  cursor: pointer;
+}
+.account-trigger__login-link:hover { text-decoration: underline; }
+.account-trigger__login-link:focus-visible { outline: none; text-decoration: underline; }
+
+/* 折叠态下未登录只留线框图标。 */
+.app-sidebar.is-collapsed .account-trigger--guest { width: 36px; height: 36px; justify-content: center; border-radius: var(--radius-sm); padding: 0; color: var(--color-text-muted); }
+.app-sidebar.is-collapsed .account-trigger--guest:hover { background: var(--state-hover); color: var(--color-text); }
+.app-sidebar.is-collapsed .account-trigger--guest .account-trigger__guest-icon { width: 22px; height: 22px; padding: 4px; }
+
+/* 主题行：标签在左、三段切换在右 —— 对齐 demo 账户菜单里的主题分段（index.html:1576-1582）。 */
+.account-menu__theme { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 6px; }
+.account-menu__theme > span { display: inline-flex; align-items: center; gap: 9px; padding-left: 4px; color: var(--color-text); font-size: 13.5px; }
+.account-menu__theme > span > svg { width: 15px; height: 15px; flex: none; opacity: 0.75; }
+.menu-item { display: flex; align-items: center; width: 100%; min-height: 36px; gap: 9px; border-radius: var(--radius-sm); padding: 8px 10px; color: var(--color-text); font-size: 13.5px; text-align: left; cursor: default; user-select: none; outline: none; }
+.menu-item:hover, .menu-item.is-selected { background: var(--state-hover); }
+.menu-item > svg { width: 15px; height: 15px; flex: none; opacity: 0.75; }
+/* 只有「尾部」图标（如子菜单 chevron）靠右；单个前置图标不受影响。 */
+.menu-item > svg:last-child:not(:first-child) { margin-left: auto; opacity: 0.6; }
+.menu-item small { margin-left: auto; color: var(--color-text-subtle); font-size: 10px; }
+.menu-item--static { justify-content: space-between; }
+.menu-item--danger { color: var(--color-danger-action-text); }
+.menu-item--danger > svg { color: var(--color-danger-action-text); opacity: 1; }
+.menu-item--danger:hover,
+.menu-item--danger:focus,
+.menu-item--danger:focus-visible,
+.menu-item--danger[data-highlighted],
+.menu-item--danger.is-selected { background: var(--color-danger-action-bg) !important; color: #ffffff !important; }
+.menu-item--danger:hover > svg,
+.menu-item--danger:focus > svg,
+.menu-item--danger:focus-visible > svg,
+.menu-item--danger[data-highlighted] > svg,
+.menu-item--danger.is-selected > svg { color: #ffffff !important; opacity: 1 !important; }
+/* shadcn DropdownMenuItem 自带 focus:**:text-accent-foreground，会把 svg 内部 path 洗成深色；
+   危险态悬停时连后代一起压白，图标才不变黑（「删除会话」用 Primitive.Item 无此问题）。 */
+.menu-item--danger:hover *,
+.menu-item--danger:focus *,
+.menu-item--danger:focus-visible *,
+.menu-item--danger[data-highlighted] *,
+.menu-item--danger.is-selected * { color: #ffffff !important; }
+/* 品牌色菜单项：用于未登录态的「去登录」入口。 */
+.menu-item--brand { color: var(--color-brand-text); }
+.menu-item--brand:hover,
+.menu-item--brand:focus,
+.menu-item--brand:focus-visible,
+.menu-item--brand[data-highlighted] { background: var(--color-brand-tint); color: var(--color-brand-text); }
+.workspace-mark { display: grid; width: 22px; height: 22px; flex: none; place-items: center; border-radius: var(--radius-full); color: var(--color-brand-text); font-size: 10px; font-weight: 600; }
+.theme-switcher { display: inline-flex; align-items: center; gap: 2px; border: 0; border-radius: var(--radius-sm); padding: 3px; background: var(--state-hover); }
+.theme-switcher__option { display: grid; width: 28px; height: 28px; place-items: center; border: 0; border-radius: var(--radius-xs); background: transparent; color: var(--color-text-muted); }
+.theme-switcher__option:hover { color: var(--color-text); }
+.theme-switcher__option[data-state="on"] { background: var(--color-raised); color: var(--color-text); box-shadow: var(--shadow-sm); }
+.theme-switcher__option svg { width: 15px; height: 15px; }
+
+.detail-layer {
+  display: flex;
+  min-width: 0;
+  flex: none;
+  width: 0;
+  overflow: hidden;
+  transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.detail-layer.is-open {
+  width: var(--detail-width, 520px);
+  min-width: 320px;
+  max-width: min(820px, 80vw);
+}
+.detail-layer.is-resizing { transition: none; }
+.detail-layer__scrim { display: none; }
+
+/* detail-panel 已迁移到 RightPanel；保留别名兼容旧调用点（如移动端 Sheet）。 */
+.detail-panel,
+.right-panel {
+  display: flex;
+  width: var(--detail-width, 520px);
+  height: 100%;
+  min-height: 0;
+  flex: none;
+  flex-direction: column;
+  border-left: 1px solid var(--color-divider);
+  background: var(--color-surface);
+  opacity: 0;
+  transform: translateX(8px);
+  transition: opacity 180ms ease 60ms, transform 220ms cubic-bezier(0.4, 0, 0.2, 1) 60ms;
+}
+.detail-layer.is-open .detail-panel,
+.detail-layer.is-open .right-panel {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* RightPanel 实际结构：外壳提供 padding，内部 frame 负责圆角/阴影。覆盖旧 .detail-panel 行为。 */
+.right-panel {
+  padding: 12px 12px 12px 0;
+  border-left: 0;
+  background: transparent;
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+.detail-layer.is-open .right-panel {
+  opacity: 1;
+  transform: none;
+}
+
+.detail-panel__time { margin-left: auto; color: var(--color-text-muted); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.table-wrap { overflow: auto; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
+/* 对齐设计系统的 .table（styles.css:516-526）：表头 11px / 0.08em，不额外铺底色。 */
+.data-table { width: 100%; font-size: 13px; }
+.data-table th { color: var(--color-text-muted); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+.data-table th, .data-table td { padding: var(--space-2); border-bottom: 1px solid var(--color-divider); text-align: left; font-variant-numeric: tabular-nums; }
+.data-table tbody tr:last-child td { border-bottom: 0; }
+.document-preview { border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg); padding: 20px; font-size: 14px; line-height: 1.75; }
+.document-preview > svg { width: 26px; height: 26px; margin-bottom: var(--space-4); color: var(--color-text-subtle); }
+.document-preview h3 { margin-bottom: 9px; font-size: 18px; }
+.document-preview p { color: var(--color-text-muted); font-size: 14px; line-height: 1.75; }
+.copy-files { margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--color-divider); }
+.copy-files h3 { margin-bottom: var(--space-2); color: var(--color-text-muted); font-size: 10px; letter-spacing: 0.11em; text-transform: uppercase; }
+.copy-files .resource-row + .resource-row { margin-top: var(--space-2); }
+.copy-files .support-copy { margin-top: var(--space-2); }
+
+@media (max-width: 768px) {
+  .app-sidebar, .app-sidebar.is-collapsed { width: 60px; }
+  .app-sidebar:not(.is-collapsed) .sidebar__surface { position: fixed; width: min(264px, calc(100vw - 44px)); box-shadow: var(--shadow-lg); }
+  .app-sidebar.is-collapsed .sidebar__surface { width: 60px; }
+}
+
+@media (max-width: 480px) {
+  .right-panel { width: min(480px, calc(100vw - 60px)); }
+  .right-panel__footer [data-slot="button"] { flex: 1; }
+}
