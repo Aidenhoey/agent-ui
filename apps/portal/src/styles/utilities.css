@@ -9,9 +9,3 @@
   white-space: nowrap;
   border: 0;
 }
-
-.support-copy {
-  color: var(--color-text-subtle);
-  font-size: 11.5px;
-  line-height: 1.55;
-}

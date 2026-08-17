@@ -1213,7 +1213,7 @@ h4.agent-md-h { font-size: 0.98rem; }
 .agent-subagent:hover .agent-subagent__open { color: var(--color-text); transform: translateX(1px); }
 
 /* ---------------------------- 子 agent 详情面板 --------------------------- */
-/* 外壳复用 .detail-panel（宽度 / 开合动画 / 头部基座），此处只补身体布局。 */
+/* 外壳复用 .right-panel（宽度 / 开合动画 / 头部基座），此处只补身体布局。 */
 .agent-subagent-panel__status { display: inline-flex; align-items: center; gap: 5px; }
 .agent-subagent-panel__status svg { width: 12px; height: 12px; }
 .agent-subagent-panel__status[data-status="completed"] { color: var(--color-success-text); background: var(--color-success-tint); }

@@ -1,7 +1,7 @@
 /**
  * app/DocsShell.tsx —— 中性组件文档站外壳（agent-elements.21st.dev / shadcn docs 范式）。
  *
- * 结构：sticky 顶栏（文字标 + 区段导航 + 主题 / 语言切换）＋ 桌面常驻左侧分组导航
+ * 结构：sticky 顶栏（文字标 + 主题 / 语言切换）＋ 桌面常驻左侧分组导航
  * （移动端经顶栏菜单按钮折叠开合，路由切换自动收起）＋ 限宽居中的内容区（Outlet）。
  * 外壳占满视口高度且不随文档滚动：侧导航与内容区（.docs-content）各自独立滚动，
  * 内容区滚动窗口在路由切换时复位到顶部。
@@ -19,7 +19,8 @@ import {
 } from "@diribo/agent-ui";
 
 import { COMPONENT_ORDER } from "../lib/components.js";
-import { Menu, Monitor, Moon, Sun, X } from "../lib/icons.js";
+import { NAV_SECTIONS } from "../lib/nav.js";
+import { Menu, Moon, Sun, X } from "../lib/icons.js";
 import { useAppState, type ThemePreference } from "./providers.js";
 
 /** 顶栏右侧：三档主题切换（light / dark / system）。 */
@@ -29,7 +30,6 @@ function ThemeToggle() {
   const options: Array<{ value: ThemePreference; label: string; icon: typeof Sun }> = [
     { value: "light", label: t.themeLight, icon: Sun },
     { value: "dark", label: t.themeDark, icon: Moon },
-    { value: "system", label: t.themeSystem, icon: Monitor },
   ];
   return (
     <ToggleGroup
@@ -93,13 +93,6 @@ export function DocsShell() {
     contentRef.current?.scrollTo(0, 0);
   }, [location.pathname]);
 
-  /** 顶栏区段高亮按路径前缀判定（NavLink 的 isActive 盖不住 /docs/* 整段）。 */
-  const sections = [
-    { to: "/docs/introduction", label: t.chrome.nav.docs, active: location.pathname.startsWith("/docs") },
-    { to: "/components/thread", label: t.chrome.nav.components, active: location.pathname.startsWith("/components") },
-    { to: "/playground", label: t.chrome.nav.playground, active: location.pathname.startsWith("/playground") },
-  ];
-
   return (
     <div className="docs-shell">
       <a className="skip-link" href="#main-content">
@@ -120,19 +113,9 @@ export function DocsShell() {
             <span className="docs-brand__mark" aria-hidden="true">◆</span>
             {t.chrome.siteName}
           </Link>
-          <nav className="docs-topnav">
-            {sections.map((section) => (
-              <Link
-                key={section.to}
-                to={section.to}
-                className={section.active ? "docs-topnav__link docs-topnav__link--active" : "docs-topnav__link"}
-              >
-                {section.label}
-              </Link>
-            ))}
-          </nav>
           <div className="docs-topbar__controls">
             <ThemeToggle />
+            <span className="docs-topbar__ctrl-sep" aria-hidden="true" />
             <LocaleToggle />
           </div>
         </div>
@@ -141,29 +124,34 @@ export function DocsShell() {
       <div className="docs-body">
         <aside className={sidenavOpen ? "docs-sidenav docs-sidenav--open" : "docs-sidenav"}>
           <nav className="docs-sidenav__nav" aria-label={t.chrome.sidenavAria}>
-            <div className="docs-sidenav__group">
-              <p className="docs-sidenav__group-title">{t.sidenav.groups.gettingStarted}</p>
-              <NavLink to="/docs/introduction" className="docs-sidenav__link">
-                {t.sidenav.items.introduction}
-              </NavLink>
-              <NavLink to="/docs/installation" className="docs-sidenav__link">
-                {t.sidenav.items.installation}
-              </NavLink>
-            </div>
-            <div className="docs-sidenav__group">
-              <p className="docs-sidenav__group-title">{t.sidenav.groups.components}</p>
-              {COMPONENT_ORDER.map((slug) => (
-                <NavLink key={slug} to={`/components/${slug}`} className="docs-sidenav__link">
-                  {dict.components.components[slug].title}
-                </NavLink>
-              ))}
-            </div>
-            <div className="docs-sidenav__group">
-              <p className="docs-sidenav__group-title">{t.sidenav.groups.playground}</p>
-              <NavLink to="/playground" className="docs-sidenav__link">
-                {t.sidenav.items.playground}
-              </NavLink>
-            </div>
+            {NAV_SECTIONS.map((section) => (
+              <div className="docs-sidenav__group" key={section.key}>
+                {section.key === "components" ? (
+                  <>
+                    <p className="docs-sidenav__group-title">{t.chrome.nav[section.key]}</p>
+                    {COMPONENT_ORDER.map((slug) => (
+                      <NavLink key={slug} to={`/components/${slug}`} className="docs-sidenav__link">
+                        {dict.components.components[slug].title}
+                      </NavLink>
+                    ))}
+                  </>
+                ) : section.children ? (
+                  <>
+                    <p className="docs-sidenav__group-title">{t.chrome.nav[section.key]}</p>
+                    {section.children.map((child) => (
+                      <NavLink key={child.to} to={child.to} className="docs-sidenav__link">
+                        {child.docKey ? dict.site.docs[child.docKey].title : t.chrome.nav[section.key]}
+                      </NavLink>
+                    ))}
+                  </>
+                ) : (
+                  /* 单条目栏目（playground）：独立链接，不再重复渲染同名分组标题。 */
+                  <NavLink to={section.to} className="docs-sidenav__grouplink">
+                    {t.chrome.nav[section.key]}
+                  </NavLink>
+                )}
+              </div>
+            ))}
           </nav>
         </aside>
         <main className="docs-content" id="main-content" ref={contentRef}>

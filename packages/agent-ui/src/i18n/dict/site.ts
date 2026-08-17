@@ -35,21 +35,10 @@ export interface SiteDict {
     /** 左侧导航 <nav> 的无障碍名。 */
     sidenavAria: string;
   };
-  /** 左侧导航：分组名与散项名；组件条目名直接复用 components 域的 title。 */
-  sidenav: {
-    groups: {
-      gettingStarted: string;
-      components: string;
-      playground: string;
-    };
-    items: {
-      introduction: string;
-      installation: string;
-      playground: string;
-    };
-  };
   /** landing 页（/）：hero 标题级文案 + 主按钮 + live demo 区 + 特性卡 + 页脚。 */
   landing: {
+    /** hero 标题上方的 eyebrow 徽标（技术栈一句话，两 locale 同值）。 */
+    badge: string;
     title: string;
     description: string;
     getStarted: string;
@@ -141,19 +130,8 @@ export const enUS: SiteDict = {
     menuToggleAria: "Toggle navigation",
     sidenavAria: "Documentation navigation",
   },
-  sidenav: {
-    groups: {
-      gettingStarted: "Getting Started",
-      components: "Components",
-      playground: "Playground",
-    },
-    items: {
-      introduction: "Introduction",
-      installation: "Installation",
-      playground: "Playground",
-    },
-  },
   landing: {
+    badge: "React · Tailwind 4 · shadcn/ui",
     title: "Agent UI",
     description:
       "A bilingual React component library for agent run timelines: streaming text, reasoning, tool calls, interrupts, evidence and artifacts — all reduced from a single event stream.",
@@ -251,19 +229,8 @@ export const zhCN: SiteDict = {
     menuToggleAria: "切换导航",
     sidenavAria: "文档导航",
   },
-  sidenav: {
-    groups: {
-      gettingStarted: "快速开始",
-      components: "组件",
-      playground: "演练场",
-    },
-    items: {
-      introduction: "介绍",
-      installation: "安装",
-      playground: "演练场",
-    },
-  },
   landing: {
+    badge: "React · Tailwind 4 · shadcn/ui",
     title: "Agent UI",
     description:
       "面向 agent 运行时间线的双语 React 组件库：流式正文、推理、工具调用、人机交互、来源引用与产物 —— 全部由同一条事件流归约而来。",

@@ -43,6 +43,12 @@
   --color-accent-700: light-dark(#1b5aa4, #80b4f6);
   --color-accent-800: light-dark(#0f4481, #a4d1ff);
 
+  /* 品牌渐变与光晕：landing hero 标题渐变、demo 舞台渐变描边、背景光斑。
+     深色下提高亮度与透明度，保证在暗底上仍然成立。 */
+  --gradient-brand: linear-gradient(120deg, var(--color-accent-800) 0%, var(--color-accent-700) 45%, var(--viz-s4) 100%);
+  --color-brand-glow: light-dark(rgba(27, 90, 164, 0.14), rgba(57, 135, 229, 0.16));
+  --color-violet-glow: light-dark(rgba(112, 72, 196, 0.10), rgba(163, 133, 224, 0.12));
+
   --font-ui: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   --font-heading: var(--font-ui);
   --font-body: var(--font-ui);
@@ -52,17 +58,46 @@
   /* overline 小标签 / 代码：JetBrains Mono 优先，回落到系统等宽。 */
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
 
-  --space-1: 4.6px;
-  --space-2: 9.2px;
-  --space-3: 13.8px;
-  --space-4: 18.4px;
-  --space-6: 27.6px;
-  --space-8: 36.8px;
+  /* 间距：严格 4px 网格。全站 margin/padding/gap 一律取刻度，不写裸值。 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
 
+  /* 排版刻度：字号一律取 token，不再写 13.5px 这类裸值。
+     hero / display 用 clamp 流式尺寸，窄屏自动收缩。 */
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-md: 14px;
+  --text-base: 15px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 24px;
+  --text-3xl: 30px;
+  --text-hero: clamp(34px, 4.6vw, 52px);
+
+  /* 动效：时长 + 缓动。交互反馈用 fast，卡片/面板用 med，入场用 slow。
+     emphasized 是先快后慢的长尾曲线（入场、浮起），spring 带轻微回弹（按钮、图标）。 */
+  --dur-fast: 130ms;
+  --dur-med: 220ms;
+  --dur-slow: 360ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.2, 0.9, 0.3, 1.1);
+
+  /* 单一圆角刻度：xs…2xl + full。Tailwind 侧在 index.css 的 @theme 里映射同一份值。 */
   --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
   --radius-full: 999px;
 
   --shadow-sm: 0 1px 2px light-dark(rgba(34, 31, 26, 0.06), rgba(0, 0, 0, 0));

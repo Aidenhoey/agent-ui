@@ -8,7 +8,7 @@
  * success 剧本无 interrupt，RunTimeline 以 readOnly 渲染（隐藏完成后的 AgentActions）。
  */
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import {
@@ -26,6 +26,38 @@ import {
 import { ArrowRight, Languages, Layers, RotateCcw, Workflow } from "../../lib/icons.js";
 
 const noop = () => {};
+
+/**
+ * 滚动入场：容器内所有 .reveal 元素进入视口时加 .is-visible（CSS 负责淡入上移）。
+ * prefers-reduced-motion 时直接全部置为可见，跳过观察器。
+ */
+function useScrollReveal<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+
+  useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const els = root.querySelectorAll(".reveal");
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      els.forEach((el) => el.classList.add("is-visible"));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            io.unobserve(entry.target);
+          }
+        }),
+      { threshold: 0.12 },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  return ref;
+}
 
 /** hero 下方的大 live demo：自动播放一轮 success 场景，⟳ 按钮重播。 */
 function LandingDemo() {
@@ -47,7 +79,7 @@ function LandingDemo() {
   }, [demo]);
 
   return (
-    <section className="landing-demo" aria-label={t.demoLabel}>
+    <section className="landing-demo reveal" aria-label={t.demoLabel}>
       <div className="landing-demo__bar">
         <span className="landing-demo__label">{t.demoLabel}</span>
         <button type="button" className="landing-demo__replay" onClick={() => demo.player.play()}>
@@ -79,10 +111,12 @@ const FEATURE_ORDER: readonly FeatureKey[] = ["protocol", "shadcn", "i18n"];
 export function LandingPage() {
   const { dict } = useLocale();
   const t = dict.site.landing;
+  const pageRef = useScrollReveal<HTMLDivElement>();
 
   return (
-    <div className="landing-page">
-      <section className="landing-hero" aria-labelledby="landing-title">
+    <div className="landing-page" ref={pageRef}>
+      <section className="landing-hero reveal" aria-labelledby="landing-title">
+        <span className="landing-hero__badge">{t.badge}</span>
         <h1 id="landing-title">{t.title}</h1>
         <p className="landing-hero__desc">{t.description}</p>
         <div className="landing-hero__actions">
@@ -98,14 +132,14 @@ export function LandingPage() {
 
       <LandingDemo />
 
-      <section className="landing-features" aria-labelledby="landing-features-title">
+      <section className="landing-features reveal" aria-labelledby="landing-features-title">
         <h2 id="landing-features-title">{t.featuresTitle}</h2>
         <div className="landing-features__grid">
           {FEATURE_ORDER.map((key) => {
             const Icon = FEATURE_ICONS[key];
             const card = t.features[key];
             return (
-              <article key={key} className="landing-feature">
+              <article key={key} className="landing-feature reveal">
                 <Icon className="landing-feature__icon" aria-hidden="true" />
                 <h3 className="landing-feature__title">{card.title}</h3>
                 <p className="landing-feature__desc">{card.description}</p>

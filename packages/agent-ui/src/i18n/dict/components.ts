@@ -129,72 +129,72 @@ export const enUS: ComponentsDict = {
   },
   components: {
     thread: {
-      title: "Thread · Run thread",
+      title: "Run thread",
       description:
         "The full run timeline: user prompt, streamed blocks, process fold, artifacts and error states composed into one scrollable thread.",
     },
     message: {
-      title: "Message · Text block",
+      title: "Text block",
       description:
         "The run's body output: streams in with a typewriter while live and settles when done; markdown and [n] citation markers render inline.",
     },
     reasoning: {
-      title: "ReasoningBlock · Reasoning",
+      title: "Reasoning",
       description:
         "The safe projection of reasoning: a shimmering status line while thinking; once done it folds into a row that expands to the reasoning text.",
     },
     "tool-call": {
-      title: "ToolCallBlock · Tool calls",
+      title: "Tool calls",
       description:
         "Lifecycle of search / file / execute tool calls: spinner while running, result summary when completed, and the cause when failed.",
     },
     sandbox: {
-      title: "SandboxBlock · Sandbox run",
+      title: "Sandbox run",
       description:
         "The safe public projection of sandbox execution: staged progress with percent, a success summary, and stable failure codes.",
     },
     interrupt: {
-      title: "InterruptCard · Human-in-the-loop",
+      title: "Human-in-the-loop",
       description:
         "Clarification and plan-approval cards that really submit: on submit the scenario's remaining events replay into the store and the card flips to resolved.",
     },
     todo: {
-      title: "TodoPanel · Task list",
+      title: "Task list",
       description:
         "The agent-maintained whole-list snapshot: collapsed to a one-line progress summary, expandable to the full list; fades away once everything is done.",
     },
     evidence: {
-      title: "EvidenceMarker & EvidenceList · Citations",
+      title: "Citations",
       description:
         "Hover a [n] marker for a source preview; the run footer lists all sources and folds everything beyond the first two.",
     },
     artifact: {
-      title: "ArtifactCard · Artifacts",
+      title: "Artifacts",
       description:
         "File cards produced by the run (draft / committed); click to open the centered workbench with a markdown preview.",
     },
     "rich-content": {
-      title: "RichBlock · Rich content",
+      title: "Rich content",
       description:
         "Chart / mermaid / svg / html fence cards inside the body text; each supports source view and centered expansion.",
     },
     "process-group": {
-      title: "ProcessGroup · Process fold",
+      title: "Process fold",
       description:
         "After a run completes, the intermediate steps fold into a one-line summary with duration; click to expand and review them step by step.",
     },
     "user-message": {
-      title: "UserMessage · User message",
+      title: "User message",
       description:
         "The user prompt bubble: attachment file cards, copy, and inline editing (⌘/Ctrl+Enter to submit, Esc to cancel).",
     },
     composer: {
-      title: "Composer · Input",
+      title: "Input",
       description:
         "The Tiptap rich-text composer: Enter to send, Shift+Enter for a newline, attachments and skill nodes included.",
     },
     cards: {
-      title: "Cards · Status & error cards",
+      title: "Status & error cards",
       description:
         "The run-failure error card (retryable), the non-intrusive connection banner, and task progress / review cards.",
     },
@@ -319,59 +319,59 @@ export const zhCN: ComponentsDict = {
   },
   components: {
     thread: {
-      title: "Thread · 运行线程",
+      title: "运行线程",
       description: "完整 run 时间线：用户提问、流式块、过程折叠、产物与错误态组合成一条可滚动线程。",
     },
     message: {
-      title: "Message · 正文块",
+      title: "正文块",
       description: "run 的正文输出：live 时打字机逐字推进、完成后定格；markdown 与 [n] 引用角标内联渲染。",
     },
     reasoning: {
-      title: "ReasoningBlock · 推理块",
+      title: "推理块",
       description: "推理过程的安全投影：思考中为微光状态行，完成后收成一行，可展开查看推理原文。",
     },
     "tool-call": {
-      title: "ToolCallBlock · 工具调用",
+      title: "工具调用",
       description: "检索 / 读写 / 执行等工具调用的生命周期：运行中转圈、完成给结果摘要、失败带原因。",
     },
     sandbox: {
-      title: "SandboxBlock · 沙箱运行",
+      title: "沙箱运行",
       description: "沙箱执行的安全公共投影：分阶段进度与百分比、成功摘要、稳定失败码。",
     },
     interrupt: {
-      title: "InterruptCard · 人机交互卡",
+      title: "人机交互卡",
       description: "澄清提问与计划审批：表单可真实提交 —— 提交后把场景剩余事件续播进 store，卡片随即转为已答复。",
     },
     todo: {
-      title: "TodoPanel · 任务清单",
+      title: "任务清单",
       description: "agent 维护的整单快照：收起为一行进度摘要，展开看全单；全部完成后自动收起淡出。",
     },
     evidence: {
-      title: "EvidenceMarker & EvidenceList · 来源引用",
+      title: "来源引用",
       description: "正文 [n] 角标悬停出来源预览；run 末尾汇总全部来源，两条之外折叠收起。",
     },
     artifact: {
-      title: "ArtifactCard · 产物卡",
+      title: "产物卡",
       description: "run 产出的文件卡片（草稿 / 已定稿），点击在中央工作台打开 markdown 预览。",
     },
     "rich-content": {
-      title: "RichBlock · 富内容围栏",
+      title: "富内容围栏",
       description: "正文内的 chart / mermaid / svg / html 四种围栏卡，每张可切源码、居中展开。",
     },
     "process-group": {
-      title: "ProcessGroup · 过程折叠",
+      title: "过程折叠",
       description: "run 完成后把中间过程收进一行摘要（含耗时），点击展开逐步回看。",
     },
     "user-message": {
-      title: "UserMessage · 用户消息",
+      title: "用户消息",
       description: "用户提问气泡：附件文件卡、复制与行内编辑（⌘/Ctrl+Enter 提交，Esc 取消）。",
     },
     composer: {
-      title: "Composer · 输入框",
+      title: "输入框",
       description: "Tiptap 富文本输入框：Enter 发送、Shift+Enter 换行，支持附件与技能节点。",
     },
     cards: {
-      title: "Cards · 状态与错误卡",
+      title: "状态与错误卡",
       description: "运行失败错误卡（可重试重演）、非侵入式连接状态浮条，以及任务进度 / 复核卡。",
     },
   },

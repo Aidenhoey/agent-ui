@@ -137,6 +137,11 @@
   flex-shrink: 0;
 }
 
+@media (max-width: 480px) {
+  .right-panel { width: min(480px, calc(100vw - 60px)); }
+  .right-panel__footer [data-slot="button"] { flex: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .right-panel__frame { animation: none; }
 }
