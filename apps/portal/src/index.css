@@ -2,113 +2,38 @@
    display=swap 不阻塞首屏；加载完成前 / 离线 / CSP 拦截时，回落到 --font-serif、--font-mono 里的
    系统字体栈（Georgia + 本机宋体 / SF Mono），衬线与等宽的视觉层级依然成立。 */
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap");
-@import "tailwindcss";
-@import "./styles/tokens.css";
-@import "./styles/reset.css";
+@import "tailwindcss" source(none);
 @import "./styles/base.css";
-@import "./styles/utilities.css";
-@import "./styles/components.css";
-@import "./styles/pages.css";
-@import "./styles/agent-run.css";
-@import "tw-animate-css";
-@import "./styles/layout.css";
-@import "./styles/right-panel.css";
 
-/* 组件库以 TS 源码形式发布 —— 扫描其中的工具类。 */
-@source "../../../packages/agent-ui/src";
-
-/* dark: 变体只作用于显式 .dark 类之下。 */
-@custom-variant dark (&:is(.dark *));
+@source "./**/*.{ts,tsx}";
 
 @theme inline {
-    --font-heading: var(--font-ui);
-    --font-sans: var(--font-ui);
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --color-chart-5: var(--chart-5);
-    --color-chart-4: var(--chart-4);
-    --color-chart-3: var(--chart-3);
-    --color-chart-2: var(--chart-2);
-    --color-chart-1: var(--chart-1);
-    --color-ring: var(--ring);
-    --color-input: var(--input);
-    --color-border: var(--border);
-    --color-destructive: var(--destructive);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-popover: var(--popover);
-    --color-card-foreground: var(--card-foreground);
-    --color-card: var(--card);
-    --color-foreground: var(--foreground);
-    --color-background: var(--background);
-    --radius-xs: var(--radius-xs);
-    --radius-sm: var(--radius-sm);
-    --radius-md: var(--radius-md);
-    --radius-lg: var(--radius-lg);
-    --radius-xl: var(--radius-xl);
-    --radius-2xl: var(--radius-2xl);
-    --radius-3xl: 28px;
-    --radius-4xl: 36px;
-}
-
-:root {
-    --background: var(--color-bg);
-    --foreground: var(--color-text);
-    --card: var(--color-raised);
-    --card-foreground: var(--color-text);
-    --popover: var(--color-raised);
-    --popover-foreground: var(--color-text);
-    --primary: var(--color-action);
-    --primary-foreground: var(--color-on-action);
-    --secondary: var(--color-surface);
-    --secondary-foreground: var(--color-text);
-    --muted: var(--color-surface);
-    --muted-foreground: var(--color-text-muted);
-    --accent: var(--state-hover);
-    --accent-foreground: var(--color-text);
-    --destructive: var(--color-danger);
-    --border: var(--color-divider);
-    --input: var(--color-border);
-    --ring: var(--color-focus);
-    --chart-1: var(--color-brand);
-    --chart-2: var(--color-focus);
-    --chart-3: var(--color-success);
-    --chart-4: var(--color-warning);
-    --chart-5: var(--color-danger);
-    --radius: 12px;
-    --sidebar: var(--color-raised);
-    --sidebar-foreground: var(--color-text);
-    --sidebar-primary: var(--color-action);
-    --sidebar-primary-foreground: var(--color-on-action);
-    --sidebar-accent: var(--state-hover);
-    --sidebar-accent-foreground: var(--color-text);
-    --sidebar-border: var(--color-divider);
-    --sidebar-ring: var(--color-focus);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-    }
-  body {
-    @apply bg-background text-foreground;
-    }
-  html {
-    @apply font-sans;
-    }
+  --font-heading: var(--font-ui);
+  --font-sans: var(--font-ui);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
 }
 
 /* --------------------------- 文档站外壳（DocsShell，docs-*） --------------------------- */

@@ -40,7 +40,7 @@ export function ImageLightbox({
   }, [index, count, onClose, onIndexChange]);
 
   const current = images[index];
-  if (!current) return null;
+  if (!current || typeof document === "undefined") return null;
 
   return createPortal(
     <div className="agent-lightbox" role="dialog" aria-modal="true" aria-label={dict.thread.lightbox.ariaLabel} onClick={onClose}>

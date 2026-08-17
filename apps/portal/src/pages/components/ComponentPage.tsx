@@ -12,7 +12,8 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { CodeView, useLocale, type ComponentSlug } from "@diribo/agent-ui";
+import { CodeView } from "@aidenhoey/agent-ui";
+import { useDemoLocale, type ComponentSlug } from "@aidenhoey/agent-ui/mock";
 
 import { COMPONENT_ORDER } from "../../lib/components.js";
 import { RotateCcw } from "../../lib/icons.js";
@@ -20,14 +21,14 @@ import { COMPONENT_REGISTRY, type ComponentVariant } from "./registry.js";
 
 /** 变体标签文本（标签 + 可选标识符后缀）。 */
 function useVariantLabel() {
-  const { dict } = useLocale();
+  const { dict } = useDemoLocale();
   const t = dict.components;
   return (variant: ComponentVariant) =>
     t.variants[variant.labelKey] + (variant.hint ? ` · ${variant.hint}` : "");
 }
 
 function ComponentDoc({ slug }: { slug: ComponentSlug }) {
-  const { dict, locale } = useLocale();
+  const { dict, locale } = useDemoLocale();
   const t = dict.components;
   const entry = t.components[slug];
   const config = COMPONENT_REGISTRY[slug];
@@ -101,7 +102,7 @@ function ComponentDoc({ slug }: { slug: ComponentSlug }) {
       </div>
 
       <h2 className="comp-h2">{t.labels.installation}</h2>
-      <CodeView source={`npx shadcn add @diribo-agent-ui/${slug}`} lang="bash" />
+      <CodeView source="pnpm add @aidenhoey/agent-ui" lang="bash" />
       <p className="comp-note">{t.notes.installation}</p>
 
       <h2 className="comp-h2">{t.labels.usage}</h2>
@@ -152,7 +153,7 @@ function ComponentDoc({ slug }: { slug: ComponentSlug }) {
 
 export function ComponentPage() {
   const { slug } = useParams<{ slug: string }>();
-  const { dict } = useLocale();
+  const { dict } = useDemoLocale();
 
   const known = COMPONENT_ORDER.includes(slug as ComponentSlug);
   if (!known) {

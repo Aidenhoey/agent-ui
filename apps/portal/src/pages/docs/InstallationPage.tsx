@@ -1,37 +1,28 @@
 /**
  * pages/docs/InstallationPage.tsx —— 文档 · 安装页（/docs/installation）。
  *
- * 安装命令（+ pnpm workspace 引用备注）、样式接入说明（Tailwind 4 + @source 扫描库
- * TS 源码 + token / agent-* 样式，指向 apps/portal/src/styles 参考接入）、最小可粘贴
+ * 安装命令（+ pnpm workspace 引用备注）、独立样式入口、最小可粘贴
  * 示例（createRunStore + buildScenarios + createRunPlayer + RunTimeline 完整片段）。
  * 代码块用库 CodeView（语言角标 + 一键复制），文案走字典 site.docs.installation 域。
  */
 
-import { CodeView, useLocale } from "@diribo/agent-ui";
+import { CodeView } from "@aidenhoey/agent-ui";
+import { useDemoLocale } from "@aidenhoey/agent-ui/mock";
 
-const INSTALL_SNIPPET = "pnpm add @diribo/agent-ui";
+const INSTALL_SNIPPET = "pnpm add @aidenhoey/agent-ui";
 
-const STYLES_SNIPPET = `@import "tailwindcss";
-
-/* The library ships TypeScript sources: let Tailwind scan them. */
-@source "../node_modules/@diribo/agent-ui/src";
-
-/* Semantic tokens and agent-* component styles (see apps/portal/src/styles). */
-@import "./styles/tokens.css";
-@import "./styles/agent-run.css";
-`;
+const STYLES_SNIPPET = `import "@aidenhoey/agent-ui/styles.css";`;
 
 const EXAMPLE_SNIPPET = `import { useEffect, useMemo } from "react";
 
 import {
-  buildScenarios,
-  createRunPlayer,
   createRunStore,
-  dictionaries,
   LocaleProvider,
   RunStoreContext,
   RunTimeline,
-} from "@diribo/agent-ui";
+} from "@aidenhoey/agent-ui";
+import { buildScenarios, createRunPlayer, dictionaries } from "@aidenhoey/agent-ui/mock";
+import "@aidenhoey/agent-ui/styles.css";
 
 const locale = "zh-CN";
 
@@ -66,7 +57,7 @@ export function RunDemo() {
 `;
 
 export function InstallationPage() {
-  const { dict } = useLocale();
+  const { dict } = useDemoLocale();
   const t = dict.site.docs.installation;
 
   return (

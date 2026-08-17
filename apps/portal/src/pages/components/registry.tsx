@@ -35,24 +35,26 @@ import {
   TaskProgressCard,
   TaskReviewCard,
   TodoPanel,
-  useLocale,
   useRunState,
   UserMessage,
   type ComposerSubmit,
-  type ComponentsDict,
-  type ComponentSlug,
   type InterruptBlock,
   type MessageAttachment,
-  type PlaybackStep,
   type RunBlock,
   type SandboxBlockView,
-  type Scenario,
   type SentMessage,
   type TaskProgress,
   type TaskReview,
   type TaskReviewDecision,
   type TaskReviewViewState,
-} from "@diribo/agent-ui";
+} from "@aidenhoey/agent-ui";
+import {
+  useDemoLocale,
+  type ComponentsDict,
+  type ComponentSlug,
+  type PlaybackStep,
+  type Scenario,
+} from "@aidenhoey/agent-ui/mock";
 
 import {
   buildDemoStore,
@@ -111,7 +113,7 @@ function StoreDemo({
   children: ReactNode;
 }) {
   const scenario = useScenario(scenarioId);
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   const store = useMemo(
     () => buildDemoStore(select ? select(scenario) : scenario.steps, locale, live),
     [scenario, select, locale, live],
@@ -139,7 +141,7 @@ const selectArtifactDraft = (scenario: Scenario) =>
 /** 完整 run 线程：live store（正文打字机播放）；错误卡 / AgentActions 的重试 = 重建 store 重演。 */
 function ThreadDemo({ scenarioId }: { scenarioId: string }) {
   const scenario = useScenario(scenarioId);
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   const [seed, setSeed] = useState(0);
   const store = useMemo(() => buildDemoStore(scenario.steps, locale, true), [scenario, locale, seed]);
   const liveUser = useMemo<SentMessage>(() => ({ text: scenario.userPrompt, attachments: [] }), [scenario]);
@@ -186,7 +188,7 @@ const ReasoningThinkingDemo = () => (
 
 /** 完成带耗时：剧本不含 reasoning 原文（库的演示面收窄约定），推理文本内联双语演示数据。 */
 function ReasoningDoneDemo() {
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   const zh = locale === "zh-CN";
   return (
     <ReasoningBlock
@@ -277,7 +279,7 @@ const SandboxFailedDemo = makeSandboxDemo({
 /** 可交互 interrupt：暂停点截断的 live store；提交后 replayTail 续播剩余事件。 */
 function InteractiveInterruptDemo({ scenarioId }: { scenarioId: string }) {
   const scenario = useScenario(scenarioId);
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   const demo = useMemo(() => {
     const { head, tail } = splitAtPause(scenario);
     return { store: buildDemoStore(head, locale, true), tail };
@@ -305,7 +307,7 @@ const InterruptPlanDemo = () => <InteractiveInterruptDemo scenarioId="plan" />;
 /** 已答复：plan 全量 replay 快照里的 interrupt 块直渲染（wire resolution 已在剧本内）。 */
 function InterruptResolvedDemo() {
   const scenario = useScenario("plan");
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   const store = useMemo(() => buildDemoStore(scenario.steps, locale), [scenario, locale]);
   const block = store.getState().blocks.find((b): b is InterruptBlock => b.kind === "interrupt");
   return (
@@ -344,7 +346,7 @@ function TodoAllDoneDemo() {
 
 /** 行内角标：悬停出来源预览；句子为内联双语演示数据。 */
 function EvidenceMarkersDemo() {
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   const zh = locale === "zh-CN";
   return (
     <StoreDemo scenarioId="success">
@@ -374,7 +376,7 @@ const EvidenceListDemo = () => (
 
 /** 产物卡：点击在中央工作台打开 markdown 预览；select 决定草稿 / 已定稿。 */
 function ArtifactDemo({ select }: { select?: (scenario: Scenario) => PlaybackStep[] }) {
-  const { dict, locale } = useLocale();
+  const { dict, locale } = useDemoLocale();
   const scenario = useScenario("success");
   const store = useMemo(
     () => buildDemoStore(select ? select(scenario) : scenario.steps, locale),
@@ -411,7 +413,7 @@ const RichAllDemo = () => (
 
 /** 单张图表卡：ChartBlock 脱离正文直渲染；spec 为内联双语演示数据。 */
 function RichChartDemo() {
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   const zh = locale === "zh-CN";
   const source = zh
     ? `{ "type": "line", "title": "月度交付量对比", "sub": "2026 年 1–6 月 · 万辆", "unit": "万辆",
@@ -455,7 +457,7 @@ const ProcessGroupNoDurationDemo = () => (
 /* ------------------------------- user-message ------------------------------- */
 
 function UserMessagePlainDemo() {
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   const zh = locale === "zh-CN";
   return (
     <UserMessage
@@ -470,7 +472,7 @@ function UserMessagePlainDemo() {
 
 /** 带附件 + 行内编辑（编辑结果直接回写气泡）。 */
 function UserMessageAttachmentDemo() {
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   const zh = locale === "zh-CN";
   const [text, setText] = useState(() =>
     zh
@@ -493,7 +495,7 @@ function UserMessageAttachmentDemo() {
 
 /** 独立可输入，提交内容回显在下方。 */
 function ComposerEchoDemo() {
-  const { dict } = useLocale();
+  const { dict } = useDemoLocale();
   const [submitted, setSubmitted] = useState("");
   return (
     <>
@@ -511,7 +513,7 @@ const ComposerDisabledDemo = () => <Composer disabled />;
 
 /** 进度 + 复核卡：可真实决策（approve / reject 后卡片转终态文案）。 */
 function ReviewCardsDemo() {
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   const zh = locale === "zh-CN";
   const progress: TaskProgress = {
     task_id: "task_demo",
@@ -563,7 +565,7 @@ function ReviewCardsDemo() {
 
 /** 错误卡 + 连接浮条：点「重试」短暂进入重连中，再回落恢复失败（模拟重连不成）。 */
 function StatusCardsDemo() {
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   const zh = locale === "zh-CN";
   const [retrying, setRetrying] = useState(false);
   const timerRef = useRef<number | null>(null);
@@ -640,7 +642,7 @@ export const COMPONENT_REGISTRY: Record<ComponentSlug, ComponentEntry> = {
         Demo: ThreadFailDemo,
       },
     ],
-    usage: `import { RunStoreContext, RunThread } from "@diribo/agent-ui";
+    usage: `import { RunStoreContext, RunThread } from "@aidenhoey/agent-ui";
 
 <RunStoreContext.Provider value={liveStore}>
   <RunThread
@@ -687,7 +689,7 @@ const store = buildDemoStore(steps, locale, true);
         Demo: MessageCompletedDemo,
       },
     ],
-    usage: `import { RunStoreContext, TextBlock } from "@diribo/agent-ui";
+    usage: `import { RunStoreContext, TextBlock } from "@aidenhoey/agent-ui";
 
 <RunStoreContext.Provider value={store}>
   <TextBlock block={block} />
@@ -719,7 +721,7 @@ const store = buildDemoStore(steps, locale, true);
         Demo: ReasoningDoneDemo,
       },
     ],
-    usage: `import { ReasoningBlock } from "@diribo/agent-ui";
+    usage: `import { ReasoningBlock } from "@aidenhoey/agent-ui";
 
 <ReasoningBlock block={block} />`,
     props: [{ name: "block", type: "ReasoningBlockView" }],
@@ -759,7 +761,7 @@ const store = buildDemoStore(steps, locale, true);
         Demo: ToolFailedDemo,
       },
     ],
-    usage: `import { RunStoreContext, ToolCallBlock } from "@diribo/agent-ui";
+    usage: `import { RunStoreContext, ToolCallBlock } from "@aidenhoey/agent-ui";
 
 <RunStoreContext.Provider value={store}>
   <ToolCallBlock block={block} />
@@ -805,7 +807,7 @@ const store = buildDemoStore(steps, locale, true);
         Demo: SandboxFailedDemo,
       },
     ],
-    usage: `import { SandboxBlock } from "@diribo/agent-ui";
+    usage: `import { SandboxBlock } from "@aidenhoey/agent-ui";
 
 <SandboxBlock block={block} />`,
     props: [{ name: "block", type: "SandboxBlockView" }],
@@ -842,7 +844,7 @@ const block = store.getState().blocks.find((b) => b.kind === "interrupt");
         Demo: InterruptResolvedDemo,
       },
     ],
-    usage: `import { InterruptCard } from "@diribo/agent-ui";
+    usage: `import { InterruptCard } from "@aidenhoey/agent-ui";
 
 <InterruptCard interrupt={interrupt} onSubmit={submitResolution} />`,
     props: [
@@ -874,7 +876,7 @@ const store = buildDemoStore(steps, locale, true);
         Demo: TodoAllDoneDemo,
       },
     ],
-    usage: `import { RunStoreContext, TodoPanel } from "@diribo/agent-ui";
+    usage: `import { RunStoreContext, TodoPanel } from "@aidenhoey/agent-ui";
 
 <RunStoreContext.Provider value={store}>
   <TodoPanel />
@@ -903,7 +905,7 @@ const store = buildDemoStore(steps, locale, true);
         Demo: EvidenceListDemo,
       },
     ],
-    usage: `import { EvidenceList, EvidenceMarker, RunStoreContext } from "@diribo/agent-ui";
+    usage: `import { EvidenceList, EvidenceMarker, RunStoreContext } from "@aidenhoey/agent-ui";
 
 <RunStoreContext.Provider value={store}>
   <p>
@@ -935,7 +937,7 @@ const store = buildDemoStore(steps, locale); // committed=false → 草稿态
         Demo: ArtifactPublishedDemo,
       },
     ],
-    usage: `import { ArtifactCard } from "@diribo/agent-ui";
+    usage: `import { ArtifactCard } from "@aidenhoey/agent-ui";
 
 <ArtifactCard artifact={artifact} onOpen={openPreview} />`,
     props: [
@@ -962,7 +964,7 @@ const store = buildDemoStore(steps, locale); // committed=false → 草稿态
         Demo: RichChartDemo,
       },
     ],
-    usage: `import { ChartBlock, MermaidBlock, RichBlock } from "@diribo/agent-ui";
+    usage: `import { ChartBlock, MermaidBlock, RichBlock } from "@aidenhoey/agent-ui";
 
 <ChartBlock source={chartSpecJson} closed />
 <MermaidBlock source={mermaidSource} closed />
@@ -993,7 +995,7 @@ const store = buildDemoStore(steps, locale); // committed=false → 草稿态
         Demo: ProcessGroupNoDurationDemo,
       },
     ],
-    usage: `import { ProcessGroup } from "@diribo/agent-ui";
+    usage: `import { ProcessGroup } from "@aidenhoey/agent-ui";
 
 <ProcessGroup blocks={intermediateBlocks} durationMs={durationMs} />`,
     props: [
@@ -1015,7 +1017,7 @@ const store = buildDemoStore(steps, locale); // committed=false → 草稿态
         Demo: UserMessageAttachmentDemo,
       },
     ],
-    usage: `import { UserMessage } from "@diribo/agent-ui";
+    usage: `import { UserMessage } from "@aidenhoey/agent-ui";
 
 <UserMessage text={text} attachments={attachments} onEdit={setText} />`,
     props: [
@@ -1042,7 +1044,7 @@ const store = buildDemoStore(steps, locale); // committed=false → 草稿态
         Demo: ComposerDisabledDemo,
       },
     ],
-    usage: `import { Composer, type ComposerSubmit } from "@diribo/agent-ui";
+    usage: `import { Composer, type ComposerSubmit } from "@aidenhoey/agent-ui";
 
 <Composer onSubmit={(value: ComposerSubmit) => send(value)} />`,
     props: [
@@ -1080,7 +1082,7 @@ const store = buildDemoStore(steps, locale); // committed=false → 草稿态
   RunErrorCard,
   TaskProgressCard,
   TaskReviewCard,
-} from "@diribo/agent-ui";
+} from "@aidenhoey/agent-ui";
 
 <TaskProgressCard progress={progress} />
 <TaskReviewCard review={review} progress={progress} onDecision={decide} readOnly={false} />

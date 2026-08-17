@@ -4,6 +4,7 @@ import { RouterProvider } from "react-router-dom";
 
 import { AppProviders } from "./app/providers.js";
 import { router } from "./app/router.js";
+import "@aidenhoey/agent-ui/styles.css";
 import "./index.css";
 
 const root = document.getElementById("root");

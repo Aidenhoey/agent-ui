@@ -1,9 +1,9 @@
 import { createContext, useContext } from "react";
 
-import { dictionaries } from "./index.js";
-import type { LocaleCode, LocaleDict } from "./index.js";
+import { componentDictionaries } from "./library.js";
+import type { LocaleCode, LocaleDict } from "./library.js";
 
-export const localeDictionaries = dictionaries;
+export const localeDictionaries = componentDictionaries;
 
 export interface LocaleContextValue {
   locale: LocaleCode;
@@ -12,7 +12,7 @@ export interface LocaleContextValue {
 
 const LocaleContext = createContext<LocaleContextValue>({
   locale: "en-US",
-  dict: dictionaries["en-US"],
+  dict: componentDictionaries["en-US"],
 });
 
 export interface LocaleProviderProps {
@@ -27,7 +27,7 @@ export interface LocaleProviderProps {
  * they read from this context and accept per-instance `labels` overrides.
  */
 export function LocaleProvider({ locale, dictionary, children }: LocaleProviderProps) {
-  const base = dictionaries[locale];
+  const base = componentDictionaries[locale];
   const dict = dictionary ? deepMerge(base, dictionary) : base;
   return <LocaleContext.Provider value={{ locale, dict }}>{children}</LocaleContext.Provider>;
 }

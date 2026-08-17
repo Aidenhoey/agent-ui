@@ -1,4 +1,4 @@
-/* pages.css —— 组件库 Composer / 会话区的页面级样式（portal 作为宿主提供）。
+/* composer.css —— Composer 与会话容器样式，由组件包直接提供。
    旧 portal 页面（首页、历史、搜索弹窗、会话流、回收站等）已随路由一并删除。 */
 
 .composer-wrap { position: relative; }

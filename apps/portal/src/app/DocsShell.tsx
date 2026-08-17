@@ -14,9 +14,9 @@ import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import {
   ToggleGroup,
   ToggleGroupItem,
-  useLocale,
   type LocaleCode,
-} from "@diribo/agent-ui";
+} from "@aidenhoey/agent-ui";
+import { useDemoLocale } from "@aidenhoey/agent-ui/mock";
 
 import { COMPONENT_ORDER } from "../lib/components.js";
 import { NAV_SECTIONS } from "../lib/nav.js";
@@ -26,7 +26,7 @@ import { useAppState, type ThemePreference } from "./providers.js";
 /** 顶栏右侧：三档主题切换（light / dark / system）。 */
 function ThemeToggle() {
   const { theme, setTheme } = useAppState();
-  const t = useLocale().dict.site.chrome;
+  const t = useDemoLocale().dict.site.chrome;
   const options: Array<{ value: ThemePreference; label: string; icon: typeof Sun }> = [
     { value: "light", label: t.themeLight, icon: Sun },
     { value: "dark", label: t.themeDark, icon: Moon },
@@ -56,7 +56,7 @@ function ThemeToggle() {
 /** 顶栏右侧：语言切换（EN / 中）。 */
 function LocaleToggle() {
   const { locale, setLocale } = useAppState();
-  const t = useLocale().dict.site.chrome;
+  const t = useDemoLocale().dict.site.chrome;
   const options: Array<{ value: LocaleCode; short: string; label: string }> = [
     { value: "en-US", short: "EN", label: t.localeEnglish },
     { value: "zh-CN", short: "中", label: t.localeChinese },
@@ -81,7 +81,7 @@ function LocaleToggle() {
 }
 
 export function DocsShell() {
-  const { dict } = useLocale();
+  const { dict } = useDemoLocale();
   const t = dict.site;
   const location = useLocation();
   const [sidenavOpen, setSidenavOpen] = useState(false);

@@ -20,6 +20,7 @@ import * as showcase from "./dict/showcase.js";
 import * as sidebar from "./dict/sidebar.js";
 import * as site from "./dict/site.js";
 import * as thread from "./dict/thread.js";
+import type { LocaleCode, LocaleDict } from "./library.js";
 
 export type { AppCommonDict } from "./dict/appCommon.js";
 export type { BlocksDict } from "./dict/blocks.js";
@@ -37,14 +38,10 @@ export type { SidebarDict } from "./dict/sidebar.js";
 export type { SiteDict } from "./dict/site.js";
 export type { ThreadDict } from "./dict/thread.js";
 
-export type LocaleCode = "en-US" | "zh-CN";
+export type { LocaleCode, LocaleDict } from "./library.js";
 
-export interface LocaleDict {
-  common: common.CommonDict;
-  blocks: blocks.BlocksDict;
-  cards: cards.CardsDict;
-  thread: thread.ThreadDict;
-  composer: composer.ComposerDict;
+/** Documentation and demo copy. Exported only through the mock subpath. */
+export interface DemoLocaleDict extends LocaleDict {
   sidebar: sidebar.SidebarDict;
   conversation: conversation.ConversationDict;
   history: history.HistoryDict;
@@ -56,7 +53,7 @@ export interface LocaleDict {
   playground: playground.PlaygroundDict;
 }
 
-export const dictionaries: Record<LocaleCode, LocaleDict> = {
+export const dictionaries: Record<LocaleCode, DemoLocaleDict> = {
   "en-US": {
     common: common.enUS,
     blocks: blocks.enUS,

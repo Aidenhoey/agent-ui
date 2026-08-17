@@ -163,7 +163,7 @@ export const enUS: SiteDict = {
     introduction: {
       title: "Introduction",
       description:
-        "What @diribo/agent-ui is: protocol-driven run timeline components, a state layer that reduces wire events into view states, and built-in demo scenarios.",
+        "What @aidenhoey/agent-ui is: protocol-driven run timeline components, a state layer that reduces wire events into view states, and optional demo scenarios.",
       overviewTitle: "What it is",
       overviewBody:
         "Agent UI is a component library for agent runtimes, not a chat skin. A run is a single event stream — run.started, block.*, run.completed. The library reduces that stream into an immutable view state and renders it with timeline components; you bring the transport (SSE, WebSocket, or the bundled mock player), the library owns reduction and rendering.",
@@ -191,10 +191,10 @@ export const enUS: SiteDict = {
     installation: {
       title: "Installation",
       description:
-        "Add @diribo/agent-ui to a React 19 + Tailwind 4 project and render your first run timeline.",
+        "Add @aidenhoey/agent-ui to a React 18 or 19 project and render your first run timeline.",
       installTitle: "Install the package",
       installBody: "Add the library with your package manager of choice.",
-      workspaceNote: "Inside a pnpm workspace, reference it as \"@diribo/agent-ui\": \"workspace:*\".",
+      workspaceNote: "Inside a pnpm workspace, reference it as \"@aidenhoey/agent-ui\": \"workspace:*\".",
       stylesTitle: "Styles",
       stylesBody:
         "Components are styled through BEM class hooks (agent-*) and Tailwind utilities on semantic tokens. You need Tailwind 4 with an @source entry covering the library's TypeScript sources, plus the token and agent-* stylesheets — apps/portal/src/styles in this repository is a complete reference setup.",
@@ -262,7 +262,7 @@ export const zhCN: SiteDict = {
     introduction: {
       title: "介绍",
       description:
-        "@diribo/agent-ui 是什么：协议驱动的 run 时间线组件、把 wire 事件归约成视图状态的状态层，以及内置演示剧本。",
+        "@aidenhoey/agent-ui 是什么：协议驱动的 run 时间线组件、把 wire 事件归约成视图状态的状态层，以及可选演示剧本。",
       overviewTitle: "库定位",
       overviewBody:
         "Agent UI 是面向 agent 运行时的组件库，而不是聊天皮肤。一轮 run 就是一条事件流 —— run.started、block.*、run.completed。库把事件流归约成不可变视图状态，再由时间线组件渲染；传输层由你接入（SSE、WebSocket 或内置 mock 播放器），归约与渲染交给库。",
@@ -288,10 +288,10 @@ export const zhCN: SiteDict = {
     },
     installation: {
       title: "安装",
-      description: "在 React 19 + Tailwind 4 项目里接入 @diribo/agent-ui，渲染你的第一条 run 时间线。",
+      description: "在 React 18 或 19 项目里接入 @aidenhoey/agent-ui，渲染你的第一条 run 时间线。",
       installTitle: "安装",
       installBody: "用你顺手的包管理器添加依赖。",
-      workspaceNote: "在 pnpm workspace 内，以 \"@diribo/agent-ui\": \"workspace:*\" 引用。",
+      workspaceNote: "在 pnpm workspace 内，以 \"@aidenhoey/agent-ui\": \"workspace:*\" 引用。",
       stylesTitle: "样式接入",
       stylesBody:
         "组件经 BEM 类名钩子（agent-*）与语义 token 上的 Tailwind 工具类完成样式。接入需要 Tailwind 4，并用 @source 覆盖组件库的 TS 源码，再补齐 token 与 agent-* 样式 —— 本仓库 apps/portal/src/styles 是完整的参考接入。",

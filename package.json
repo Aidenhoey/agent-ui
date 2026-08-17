@@ -7,12 +7,23 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "build": "pnpm --recursive --workspace-concurrency=1 --if-present run build",
-    "dev": "pnpm --filter @diribo/agent-ui-portal dev",
-    "test": "pnpm --recursive --workspace-concurrency=1 --if-present run test",
-    "typecheck": "pnpm --recursive --workspace-concurrency=1 --if-present run typecheck"
+    "build": "pnpm run build:package && pnpm --filter agent-ui-portal build",
+    "build:package": "pnpm --filter @aidenhoey/agent-ui build",
+    "build:portal": "pnpm run build:package && pnpm --filter agent-ui-portal build",
+    "dev": "pnpm run build:package && pnpm --filter agent-ui-portal dev",
+    "test": "pnpm --filter @aidenhoey/agent-ui test",
+    "typecheck": "pnpm --filter @aidenhoey/agent-ui typecheck && pnpm run build:package && pnpm --filter agent-ui-portal typecheck",
+    "pack:check": "pnpm run build:package && pnpm --filter @aidenhoey/agent-ui pack:check",
+    "test:dependencies": "pnpm --filter @aidenhoey/agent-ui test:dependencies",
+    "test:tree-shaking": "pnpm --filter @aidenhoey/agent-ui test:tree-shaking",
+    "test:consumer": "node scripts/test-consumer.mjs",
+    "ci": "pnpm test && pnpm test:dependencies && pnpm typecheck && pnpm build && pnpm test:tree-shaking && pnpm pack:check && pnpm test:consumer",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm build:package && changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.7",
     "typescript": "^5.9.2"
   }
 }

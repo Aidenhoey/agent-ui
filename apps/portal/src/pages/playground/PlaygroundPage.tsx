@@ -16,23 +16,25 @@
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 
 import {
-  buildScenarios,
   Composer,
   ContentModal,
-  createRunPlayer,
   createRunStore,
-  dictionaries,
   RunStoreContext,
   RunTimeline,
   StreamingMarkdown,
-  useLocale,
   useRunState,
   UserMessage,
   type ArtifactView,
   type ComposerSubmit,
   type MessageAttachment,
+} from "@aidenhoey/agent-ui";
+import {
+  buildScenarios,
+  createRunPlayer,
+  dictionaries,
+  useDemoLocale,
   type PlayerPhase,
-} from "@diribo/agent-ui";
+} from "@aidenhoey/agent-ui/mock";
 
 import { RotateCcw } from "../../lib/icons.js";
 
@@ -47,7 +49,7 @@ function AutoScroll({ scrollRef }: { scrollRef: RefObject<HTMLDivElement | null>
 }
 
 export function PlaygroundPage() {
-  const { dict, locale } = useLocale();
+  const { dict, locale } = useDemoLocale();
   const t = dict.playground;
 
   const scenarios = useMemo(() => buildScenarios(locale), [locale]);

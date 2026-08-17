@@ -8,7 +8,7 @@
 
 import { createBrowserRouter, Link, type RouteObject } from "react-router-dom";
 
-import { useLocale } from "@diribo/agent-ui";
+import { useDemoLocale } from "@aidenhoey/agent-ui/mock";
 
 import { ComponentPage } from "../pages/components/ComponentPage.js";
 import { InstallationPage } from "../pages/docs/InstallationPage.js";
@@ -18,7 +18,7 @@ import { PlaygroundPage } from "../pages/playground/PlaygroundPage.js";
 import { DocsShell } from "./DocsShell.js";
 
 function NotFoundPage() {
-  const { dict } = useLocale();
+  const { dict } = useDemoLocale();
   const copy = dict.site.notFound;
 
   return (

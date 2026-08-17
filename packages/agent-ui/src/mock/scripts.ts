@@ -12,7 +12,7 @@
  * todo 无隐私顾虑，完整成功流携带任务清单生命周期，供演示/验收任务清单面板。
  *
  * 与 SRC 的差异：
- * - 删除 Ajv 运行时校验（库内无 @diribo/contracts）：事件按 protocol/events.ts 的
+ * - 删除 Ajv 运行时校验（库内无外部 contracts 包）：事件按 protocol/events.ts 的
  *   PublicRunEvent 手写，build() 只做信封组装与类型断言，不再当场校验。
  * - 内容双语化：buildScenarios(locale) 按 LocaleCode 出中英两套演示内容
  *   （userPrompt / 正文 / todo / interrupt 表单 / 产物等均为演示数据而非 UI 文案，

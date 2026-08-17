@@ -63,7 +63,7 @@ export interface ShowcaseDict {
 export const enUS: ShowcaseDict = {
   pageTitle: "Component showcase",
   pageDescription:
-    "A hands-on tour of the @diribo/agent-ui run-timeline components. Every demo renders real view states reduced from the library's built-in demo scenarios (buildScenarios), and is fully interactive.",
+    "A hands-on tour of the @aidenhoey/agent-ui run-timeline components. Every demo renders real view states reduced from the library's demo scenarios (buildScenarios), and is fully interactive.",
   navItem: "Components",
   tocAria: "Component sections",
   sections: {
@@ -154,7 +154,7 @@ export const enUS: ShowcaseDict = {
 export const zhCN: ShowcaseDict = {
   pageTitle: "组件展示",
   pageDescription:
-    "逐个展示 @diribo/agent-ui 的 run 时间线组件：demo 数据由库内演示剧本（buildScenarios）归约成真实视图状态渲染，全部可交互。",
+    "逐个展示 @aidenhoey/agent-ui 的 run 时间线组件：demo 数据由库内演示剧本（buildScenarios）归约成真实视图状态渲染，全部可交互。",
   navItem: "组件",
   tocAria: "组件分节导航",
   sections: {

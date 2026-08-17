@@ -6,7 +6,7 @@
  * 全部文案走字典 site.docs.introduction 域。
  */
 
-import { useLocale } from "@diribo/agent-ui";
+import { useDemoLocale } from "@aidenhoey/agent-ui/mock";
 
 /** 架构流程图节点：code 为库内真实标识符，captionKey 索引字典 caption。 */
 const ARCH_NODES = [
@@ -29,7 +29,7 @@ const BLOCK_ROWS = [
 ] as const;
 
 export function IntroductionPage() {
-  const { dict } = useLocale();
+  const { dict } = useDemoLocale();
   const t = dict.site.docs.introduction;
 
   return (

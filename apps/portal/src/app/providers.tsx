@@ -19,7 +19,8 @@ import {
   type PropsWithChildren,
 } from "react";
 
-import { LocaleProvider, TooltipProvider, type LocaleCode } from "@diribo/agent-ui";
+import { LocaleProvider, TooltipProvider, type LocaleCode } from "@aidenhoey/agent-ui";
+import { DemoLocaleProvider } from "@aidenhoey/agent-ui/mock";
 
 export type ThemePreference = "light" | "dark" | "system";
 
@@ -83,9 +84,11 @@ export function AppProviders({ children }: PropsWithChildren) {
 
   return (
     <LocaleProvider locale={locale}>
-      <AppStateContext.Provider value={value}>
-        <TooltipProvider delayDuration={450}>{children}</TooltipProvider>
-      </AppStateContext.Provider>
+      <DemoLocaleProvider locale={locale}>
+        <AppStateContext.Provider value={value}>
+          <TooltipProvider delayDuration={450}>{children}</TooltipProvider>
+        </AppStateContext.Provider>
+      </DemoLocaleProvider>
     </LocaleProvider>
   );
 }

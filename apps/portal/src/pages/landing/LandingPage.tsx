@@ -12,16 +12,13 @@ import { useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import {
-  buildScenarios,
   buttonVariants,
-  createRunPlayer,
   createRunStore,
-  dictionaries,
   RunStoreContext,
   RunTimeline,
-  useLocale,
   UserMessage,
-} from "@diribo/agent-ui";
+} from "@aidenhoey/agent-ui";
+import { buildScenarios, createRunPlayer, dictionaries, useDemoLocale } from "@aidenhoey/agent-ui/mock";
 
 import { ArrowRight, Languages, Layers, RotateCcw, Workflow } from "../../lib/icons.js";
 
@@ -61,7 +58,7 @@ function useScrollReveal<T extends HTMLElement>() {
 
 /** hero 下方的大 live demo：自动播放一轮 success 场景，⟳ 按钮重播。 */
 function LandingDemo() {
-  const { dict, locale } = useLocale();
+  const { dict, locale } = useDemoLocale();
   const t = dict.site.landing;
 
   const demo = useMemo(() => {
@@ -109,7 +106,7 @@ type FeatureKey = keyof typeof FEATURE_ICONS;
 const FEATURE_ORDER: readonly FeatureKey[] = ["protocol", "shadcn", "i18n"];
 
 export function LandingPage() {
-  const { dict } = useLocale();
+  const { dict } = useDemoLocale();
   const t = dict.site.landing;
   const pageRef = useScrollReveal<HTMLDivElement>();
 

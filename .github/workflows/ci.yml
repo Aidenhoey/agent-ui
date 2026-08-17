@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Unit tests
+        run: pnpm --filter @aidenhoey/agent-ui test
+      - name: Package type check
+        run: pnpm --filter @aidenhoey/agent-ui typecheck
+      - name: Dependency declaration check
+        run: pnpm --filter @aidenhoey/agent-ui test:dependencies
+      - name: Build component package
+        run: pnpm --filter @aidenhoey/agent-ui build
+      - name: Verify tree-shaking
+        run: pnpm --filter @aidenhoey/agent-ui test:tree-shaking
+      - name: Portal type check
+        run: pnpm --filter agent-ui-portal typecheck
+      - name: Build Portal
+        run: pnpm --filter agent-ui-portal build
+      - name: Inspect npm package contents
+        run: pnpm --filter @aidenhoey/agent-ui pack:check
+      - name: Install and consume packed package
+        run: pnpm test:consumer

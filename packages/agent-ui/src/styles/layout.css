@@ -1,4 +1,4 @@
-/* layout.css —— 仍在服役的布局类。
+/* layout.css —— 组件库布局类。
    旧 portal 外壳（app-shell / 侧栏 / 账户菜单 / 会话列表等）已随路由一并删除；
    .right-panel 的外壳样式统一由 right-panel.css 承担。 */
 

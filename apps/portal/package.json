@@ -1,5 +1,5 @@
 {
-  "name": "@diribo/agent-ui-portal",
+  "name": "agent-ui-portal",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@diribo/agent-ui": "workspace:*",
+    "@aidenhoey/agent-ui": "workspace:*",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.18.1"

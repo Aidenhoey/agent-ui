@@ -1,7 +1,7 @@
 /**
  * Agent 输出公共事件类型层（wire 2 · PublicAPI 2.x）。
  *
- * 移植自 agent-portal 的 protocol/events.ts：上游 `@diribo/contracts` 的 generated
+ * 移植自 agent portal 的 protocol/events.ts：上游 generated contracts 的
  * 类型在此全部落地为手写的本地 TS 接口（逐字段按契约语义推导，见各注释）。
  * 与 SRC 的差异：
  * - 无 Ajv 运行时校验（writePublicRunEvent / asRunEvent 等 seam 全部删除），只留类型。

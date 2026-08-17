@@ -1,1 +1,1 @@
-export { cn } from "@diribo/agent-ui";
+export { cn } from "@aidenhoey/agent-ui";

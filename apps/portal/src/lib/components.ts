@@ -6,7 +6,7 @@
  * ComponentSlug 也从库导出，保证与路由 /components/:slug 一一对应。
  */
 
-import { type ComponentSlug } from "@diribo/agent-ui";
+import { type ComponentSlug } from "@aidenhoey/agent-ui/mock";
 
 export const COMPONENT_ORDER: readonly ComponentSlug[] = [
   "thread",

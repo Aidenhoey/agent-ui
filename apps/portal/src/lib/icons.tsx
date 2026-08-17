@@ -2,7 +2,7 @@
  * lib/icons.tsx —— 文档站壳层（DocsShell）用的图标集。
  *
  * portal 不直接依赖 lucide-react（复刻约束：不新增 npm 依赖；lucide-react 仅是
- * @diribo/agent-ui 的依赖，pnpm 隔离下应用层无法解析）。本文件的 SVG 节点数据
+ * agent-ui 的依赖，pnpm 隔离下应用层无法解析）。本文件的 SVG 节点数据
  * 提取自 workspace 内已安装的 lucide-react v1.31.0（ISC License），组件 API
  * 对齐 lucide-react 渲染输出（24×24 stroke 图标，className/aria 属性透传）。
  */

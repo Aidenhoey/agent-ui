@@ -1,3 +1,5 @@
+import "./styles.css";
+
 // Protocol：wire 2 公共事件、负载与渲染辅助（工具分类 / interrupt 投影）。
 export type * from "./protocol/events.js";
 export {
@@ -57,24 +59,27 @@ export type {
   TextBlock as TextBlockView,
 } from "./state/view-types.js";
 export type { BlockKind as ViewBlockKind } from "./state/view-types.js";
-export { emptyRunState } from "./state/view-types.js";
-export { reduceAll, reduceEvent } from "./state/reducer.js";
 export type { CreateRunStoreOptions, RunStore } from "./state/store.js";
 export {
-  createFrozenStore,
   createRunStore,
   RunSequenceError,
   RunStoreContext,
   useRunState,
   useRunStore,
 } from "./state/store.js";
-export { clearAllDrafts, clearDraft, readDraft, writeDraft } from "./state/draft-registry.js";
 
 // i18n：分域字典 + LocaleProvider。
-export type * from "./i18n/index.js";
-export { dictionaries } from "./i18n/index.js";
+export type {
+  BlocksDict,
+  CardsDict,
+  CommonDict,
+  ComposerDict,
+  LocaleCode,
+  LocaleDict,
+  ThreadDict,
+} from "./i18n/library.js";
 export type { LocaleContextValue, LocaleProviderProps } from "./i18n/locale-context.js";
-export { interpolate, LocaleProvider, localeDictionaries, useLocale } from "./i18n/locale-context.js";
+export { interpolate, LocaleProvider, useLocale } from "./i18n/locale-context.js";
 
 // Runtime：Run 控制器与会话注册表骨架（Wave 0 仅 mock 模式）。
 export type {
@@ -101,36 +106,20 @@ export { useRunArtifactsSync } from "./hooks/useRunArtifactsSync.js";
 export { useStickToBottom } from "./hooks/useStickToBottom.js";
 export { useTypewriter } from "./hooks/useTypewriter.js";
 
-// Mock：事件播放器 + 双语演示剧本。
-export { createRunPlayer, type PlaybackStep, type PlayerPhase, type RunPlayer } from "./mock/player.js";
-export { buildScenarios, type Scenario } from "./mock/scripts.js";
-
 // Markdown 与富内容（chart/mermaid/svg/html 围栏）。
 export { StreamingMarkdown } from "./markdown/StreamingMarkdown.js";
-export {
-  isRichFenceLang,
-  RICH_FENCE_LANGS,
-  type RichFenceLang,
-} from "./components/blocks/rich-content.js";
-export { renderRichFence } from "./components/blocks/richFence.js";
-export {
-  downloadCsv,
-  parseChartSpec,
-  sanitizeSvg,
-  specToCsv,
-  VIZ_PALETTE,
-  wrapHtml,
-  type ChartParseError,
-  type ChartParseErrorReason,
-  type ChartParseResult,
-  type ChartSeries,
-  type ChartSpec,
-  type ChartType,
+export type {
+  ChartParseError,
+  ChartParseErrorReason,
+  ChartParseResult,
+  ChartSeries,
+  ChartSpec,
+  ChartType,
+  RichFenceLang,
 } from "./components/blocks/rich-content.js";
 export { ChartBlock } from "./components/blocks/ChartBlock.js";
 export { MermaidBlock } from "./components/blocks/MermaidBlock.js";
 export { RichBlock } from "./components/blocks/RichBlock.js";
-export { Seg, TBtn, VizCard, type SegOption } from "./components/blocks/viz-card.js";
 
 // 块组件（与 state 视图类型同名者按值/类型双空间共存导出）。
 export { BrowserBlock } from "./components/blocks/BrowserBlock.js";
@@ -145,12 +134,7 @@ export { ToolCallBlock } from "./components/blocks/ToolCallBlock.js";
 // Run 组件（时间线 / 卡片 / 容器）。
 export { AgentActions } from "./components/AgentActions.js";
 export { ArtifactCard } from "./components/ArtifactCard.js";
-export {
-  ArtifactPanel,
-  artifactDownloadable,
-  downloadArtifact,
-  kindLabel,
-} from "./components/ArtifactPanel.js";
+export { ArtifactPanel } from "./components/ArtifactPanel.js";
 export { ConnectionBanner } from "./components/ConnectionBanner.js";
 export { ContentModal } from "./components/ContentModal.js";
 export { ContextCompaction } from "./components/ContextCompaction.js";
@@ -168,10 +152,7 @@ export { RunErrorCard } from "./components/RunErrorCard.js";
 export { RunThread, type PanelTarget, type Turn } from "./components/RunThread.js";
 export { RunTimeline } from "./components/RunTimeline.js";
 export { SubagentPanel } from "./components/SubagentPanel.js";
-export {
-  SubagentPanelContext,
-  type SubagentPanelValue,
-} from "./components/subagent-panel-context.js";
+export type { SubagentPanelValue } from "./components/subagent-panel-context.js";
 export { TaskProgressCard } from "./components/TaskProgressCard.js";
 export { TaskReviewCard } from "./components/TaskReviewCard.js";
 export { ThreadComposer, type QueuedMessage } from "./components/ThreadComposer.js";
@@ -195,10 +176,6 @@ export {
 
 // Composer（Tiptap 富文本输入 + 附件 mock 上传）。
 export {
-  allAttachmentsReady,
-  attachmentReducer,
-  readyInputFileIds,
-  toMessageAttachments,
   type AttachmentAction,
   type AttachmentStatus,
   type ComposerAttachment,
@@ -212,14 +189,6 @@ export {
   type ThinkingEffort,
 } from "./composer/composerConfig.js";
 export { Composer, type ComposerSubmit } from "./composer/Composer.js";
-export {
-  cancelTemporaryInput,
-  getTemporaryInput,
-  uploadTemporaryInput,
-  type MockTemporaryInput,
-  type MockUploadCallbacks,
-} from "./composer/mockUpload.js";
-
 // shadcn/ui 原语。
 export { Alert, AlertDescription, AlertTitle, alertVariants } from "./components/ui/alert.js";
 export { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar.js";
@@ -274,5 +243,5 @@ export { Textarea } from "./components/ui/textarea.js";
 export { ToggleGroup, ToggleGroupItem, toggleGroupVariants } from "./components/ui/toggle-group.js";
 export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./components/ui/tooltip.js";
 
-// 工具函数。
-export { cn, formatBytes, formatCostMicro, formatNumber, formatSeconds } from "./lib/utils.js";
+// Stable class-name composition helper.
+export { cn } from "./lib/utils.js";

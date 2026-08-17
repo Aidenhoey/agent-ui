@@ -14,16 +14,18 @@
 import { useMemo } from "react";
 
 import {
-  buildScenarios,
   createRunStore,
-  dictionaries,
-  useLocale,
   type LocaleCode,
-  type PlaybackStep,
   type PublicRunEvent,
   type RunStore,
+} from "@aidenhoey/agent-ui";
+import {
+  buildScenarios,
+  dictionaries,
+  useDemoLocale,
+  type PlaybackStep,
   type Scenario,
-} from "@diribo/agent-ui";
+} from "@aidenhoey/agent-ui/mock";
 
 /** 把一段事件流灌进真实 run store；live=true 保持 "live" 连接（打字机生效），否则落 "replay"。 */
 export function buildDemoStore(steps: PlaybackStep[], locale: LocaleCode, live = false): RunStore {
@@ -90,7 +92,7 @@ export function replayTail(store: RunStore, tail: PlaybackStep[], resolution: Re
 
 /** 当前 locale 的演示剧本（随 locale 重建；事件时间戳 / 序列号随之刷新）。 */
 export function useScenarios(): Scenario[] {
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   return useMemo(() => buildScenarios(locale), [locale]);
 }
 

@@ -1,7 +1,7 @@
 /**
  * pages/showcase/ShowcasePage.tsx —— 组件展示页（/showcase，复刻新增，无 SRC 对应）。
  *
- * 分节展示 @diribo/agent-ui 的 run 时间线组件：每节 = 组件名 + 一句话描述（字典
+ * 分节展示 @aidenhoey/agent-ui 的 run 时间线组件：每节 = 组件名 + 一句话描述（字典
  * showcase 域，双语）+ live demo。demo 数据用库 buildScenarios(locale) 的演示剧本
  * 灌进真实 run store（createRunStore 逐事件 dispatch）得到 RunViewState，再经
  * RunStoreContext.Provider + renderBlock/组件直接渲染 —— 与会话页同一套渲染路径。
@@ -20,12 +20,10 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import {
   ArtifactCard,
-  buildScenarios,
   Composer,
   ConnectionBanner,
   ContentModal,
   createRunStore,
-  dictionaries,
   EvidenceList,
   EvidenceMarker,
   interpolate,
@@ -38,7 +36,6 @@ import {
   SandboxBlock,
   StreamingMarkdown,
   TodoPanel,
-  useLocale,
   useRunState,
   UserMessage,
   type ArtifactView,
@@ -46,15 +43,20 @@ import {
   type InterruptBlock,
   type LocaleCode,
   type MessageAttachment,
-  type PlaybackStep,
   type PublicRunEvent,
   type RunBlock,
   type RunStore,
   type SandboxBlockView,
+} from "@aidenhoey/agent-ui";
+import {
+  buildScenarios,
+  dictionaries,
+  useDemoLocale,
+  type PlaybackStep,
   type Scenario,
   type ShowcaseDict,
   type ShowcaseSectionCopy,
-} from "@diribo/agent-ui";
+} from "@aidenhoey/agent-ui/mock";
 
 type SectionId = keyof ShowcaseDict["sections"];
 
@@ -269,7 +271,7 @@ function InteractiveInterruptTimeline({ onSubmit }: { onSubmit: (resolution: Rec
 
 /** 产物卡 demo：点击在中央工作台打开 markdown 预览。 */
 function ArtifactDemo({ artifact }: { artifact: ArtifactView }) {
-  const { dict } = useLocale();
+  const { dict } = useDemoLocale();
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -288,7 +290,7 @@ function ArtifactDemo({ artifact }: { artifact: ArtifactView }) {
 
 /** 用户消息 demo：附件文件卡 + 行内编辑（编辑结果直接回写气泡）。 */
 function UserMessageDemo() {
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   const zh = locale === "zh-CN";
   const [text, setText] = useState(() =>
     zh
@@ -309,7 +311,7 @@ function UserMessageDemo() {
 
 /** 恢复失败浮条 demo：点「重试」短暂进入重连中，再回落恢复失败（模拟重连不成）。 */
 function ConnectionRetryDemo() {
-  const { locale } = useLocale();
+  const { locale } = useDemoLocale();
   const [retrying, setRetrying] = useState(false);
   const timerRef = useRef<number | null>(null);
   useEffect(
@@ -338,7 +340,7 @@ function ConnectionRetryDemo() {
 
 /** Composer demo：独立可输入，提交内容回显在下方。 */
 function ComposerDemo() {
-  const { dict } = useLocale();
+  const { dict } = useDemoLocale();
   const [submitted, setSubmitted] = useState("");
   return (
     <>
@@ -353,7 +355,7 @@ function ComposerDemo() {
 /* --------------------------------- 页面本体 --------------------------------- */
 
 export function ShowcasePage() {
-  const { dict, locale } = useLocale();
+  const { dict, locale } = useDemoLocale();
   const t = dict.showcase;
   const zh = locale === "zh-CN";
 
